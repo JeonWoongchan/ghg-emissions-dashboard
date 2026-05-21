@@ -103,6 +103,7 @@ export function CompanyDetailContent({ id }: { id: string }) {
                 selectedYear={selectedYear}
                 title="연도별 배출량 추이"
                 description={`${company.name} · 연도별 누적 온실가스 배출량 (tCO₂e)`}
+                helpText="해당 기업의 연도별 배출량 추이를 막대 그래프로 표시합니다. 강조 표시된 막대가 현재 선택된 연도이며, 상단 연도 선택기로 변경할 수 있습니다."
             />
 
             {/* Scope 비중 + 배출원별 차트 */}

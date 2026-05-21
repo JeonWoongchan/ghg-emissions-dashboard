@@ -1,0 +1,25 @@
+'use client';
+// 카드/차트 제목 옆 i 아이콘 도움말 툴팁
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
+
+export function InfoTooltip({ content }: { content: string }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <button
+                        type="button"
+                        className="ml-1.5 inline-flex shrink-0 items-center text-muted-foreground transition-colors hover:text-foreground"
+                        aria-label="도움말"
+                    >
+                        <Info className="size-3.5" />
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-64 whitespace-pre-line leading-relaxed">
+                    {content}
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}

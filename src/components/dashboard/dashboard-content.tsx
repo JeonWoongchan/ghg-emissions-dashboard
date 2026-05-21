@@ -72,6 +72,7 @@ export function DashboardContent() {
                 selectedYear={selectedYear}
                 title="연도별 총 배출량 추이"
                 description="전체 회사 합산 · 연도별 누적 온실가스 배출량 (tCO₂e)"
+                helpText="전체 기업 합산 기준 연도별 배출량 추이입니다. 강조 표시된 막대가 현재 선택된 연도입니다. 연도 선택기로 기준 연도를 변경할 수 있습니다."
             />
         </div>
     );

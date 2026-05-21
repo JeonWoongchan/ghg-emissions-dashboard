@@ -4,6 +4,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MultiSelectPopover } from '@/components/shared/multi-select-popover';
 import { CHART_COLORS } from '@/constants/chart';
@@ -237,7 +238,10 @@ export function EmissionTrendChart({ data, companies, year }: Props) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>월간 배출량 추이</CardTitle>
+                <CardTitle className="flex items-center">
+                    월간 배출량 추이
+                    <InfoTooltip content={'전체 기업 합산 또는 기업별 월간 배출량을 선 차트로 표시합니다.\n\n전체 합산 탭: 합산 추이 위에 특정 기업을 최대 5개까지 오버레이 비교할 수 있습니다.\n\n회사별 비교 탭: 원하는 기업만 선택해 라인 차트로 비교합니다.'} />
+                </CardTitle>
                 <CardDescription>{year}년 월간 온실가스 배출량 (tCO₂e)</CardDescription>
             </CardHeader>
             <CardContent>

@@ -1,6 +1,7 @@
 // 대시보드 상단 KPI 요약 카드 4종 렌더링
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { formatEmissions, formatYearMonth } from '@/lib/format';
 import type { CompanyTotal, MonthlyTotal } from '@/lib/emissions';
 import { Activity, Building2, TrendingDown, TrendingUp } from 'lucide-react';
@@ -21,8 +22,9 @@ function AnnualEmissionsCard({ total, year }: { total: number; year: number }) {
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
                     연간 총 배출량
+                    <InfoTooltip content="선택한 연도의 전체 기업 온실가스 배출량 합산입니다. 상단 연도 선택기로 연도를 변경할 수 있습니다." />
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -45,8 +47,9 @@ function MonthlyEmissionsCard({
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
                     최근 월 배출량
+                    <InfoTooltip content="선택 연도의 마지막 월 배출량과 전월 대비 증감률입니다. 초록색은 감소(개선), 빨간색은 증가(악화)를 나타냅니다." />
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -72,8 +75,9 @@ function TopEmitterCard({ company }: { company: CompanyTotal | undefined }) {
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
                     최다 배출 기업
+                    <InfoTooltip content="선택 연도 기준 누적 배출량이 가장 많은 기업입니다. 아래 기업별 차트에서 막대를 클릭하면 해당 기업 상세 페이지로 이동합니다." />
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -100,8 +104,9 @@ function ImprovingCompaniesCard({
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
                     감소 추세 기업
+                    <InfoTooltip content="선택 연도 1월 대비 12월 배출량이 감소한 기업 수입니다. 탄소 감축 노력의 성과를 한눈에 파악할 수 있습니다." />
                 </CardTitle>
             </CardHeader>
             <CardContent>

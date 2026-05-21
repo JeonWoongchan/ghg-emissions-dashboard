@@ -2,6 +2,7 @@
 
 // 연도별 총 배출량 비교 바 차트 — 선택된 연도 강조 표시
 
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AnnualTotal } from '@/lib/emissions';
 import { formatEmissions } from '@/lib/format';
@@ -12,6 +13,7 @@ type Props = {
     selectedYear: number;
     title?: string;
     description?: string;
+    helpText?: string;
 };
 
 const axisTickStyle = { fontSize: 12, fill: 'var(--muted-foreground)' };
@@ -22,6 +24,7 @@ export function YearlyComparisonChart({
     selectedYear,
     title = '연도별 총 배출량',
     description = '연도별 누적 온실가스 배출량 비교 (tCO₂e)',
+    helpText,
 }: Props) {
     // 선택된 연도는 강조 색상, 나머지는 muted 처리
     const coloredData = data.map((d) => ({
@@ -33,7 +36,10 @@ export function YearlyComparisonChart({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{title}</CardTitle>
+                <CardTitle className="flex items-center">
+                    {title}
+                    {helpText && <InfoTooltip content={helpText} />}
+                </CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>

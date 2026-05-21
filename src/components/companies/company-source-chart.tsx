@@ -2,6 +2,7 @@
 
 // 배출원별 연간 총 배출량 바 차트 렌더링
 
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SCOPE_COLORS, SCOPE_LABELS, SOURCE_LABELS } from '@/constants/ghg-scope';
 import { formatEmissions, formatCompanyName } from '@/lib/format';
@@ -27,7 +28,10 @@ export function CompanySourceChart({ sources, year }: Props) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>배출원별 배출량</CardTitle>
+                <CardTitle className="flex items-center">
+                    배출원별 배출량
+                    <InfoTooltip content="연료 유형·활동별로 연간 배출량을 비교합니다. 막대 색상은 Scope 구분을 나타내며, 호버 시 해당 배출원이 속한 Scope를 함께 확인할 수 있습니다." />
+                </CardTitle>
                 <CardDescription>
                     배출원 및 Scope 구분 · {year}년 연간 (tCO₂e)
                 </CardDescription>
