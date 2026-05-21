@@ -5,6 +5,9 @@ import type { Company, GhgEmission } from '@/types';
 export type MonthlyTotal = { month: string; total: number };
 export type CompanyTotal = { id: string; name: string; country: string; total: number };
 
+// 병합 데이터에서 전체 합산 열을 식별하는 키
+export const TOTAL_EMISSIONS_KEY = '전체 합산' as const;
+
 // 회사별 연간 총 배출량 집계 (총합 내림차순 정렬)
 export function getTotalByCompany(companies: Company[]): CompanyTotal[] {
     return companies
@@ -66,6 +69,20 @@ export function getImprovingCompanyCount(companies: Company[]): number {
         const lastTotal = sumByMonth(company.emissions, months[months.length - 1]);
         return lastTotal < firstTotal;
     }).length;
+}
+
+// 트렌드 차트용 전체 합산 + 회사별 배출량 병합 데이터 생성
+// monthlyByCompany는 호출부에서 미리 계산된 값을 주입받아 이중 계산 방지
+export function getMergedMonthlyData(
+    monthlyByCompany: Record<string, number | string>[],
+    monthlyTotals: MonthlyTotal[]
+): Record<string, number | string>[] {
+    // 인덱스 기반 정렬 대신 month 키로 매핑하여 순서 불일치 방지
+    const totalMap = new Map(monthlyTotals.map((m) => [m.month, m.total]));
+    return monthlyByCompany.map((row) => ({
+        ...row,
+        [TOTAL_EMISSIONS_KEY]: totalMap.get(row.month as string) ?? 0,
+    }));
 }
 
 function sumByMonth(emissions: GhgEmission[], month: string): number {

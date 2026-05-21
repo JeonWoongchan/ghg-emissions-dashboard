@@ -28,7 +28,7 @@ function DashboardSkeleton() {
 // 대시보드 전체 컨텐츠 렌더링
 export function DashboardContent() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
-    const { monthlyTotals, momChange, totalByCompany, monthlyByCompany, improvingCount } =
+    const { monthlyTotals, momChange, totalByCompany, mergedMonthlyData, improvingCount } =
         useDashboardMetrics(companies ?? []);
 
     if (isLoading) return <DashboardSkeleton />;
@@ -50,7 +50,7 @@ export function DashboardContent() {
                 totalCompanies={companies.length}
             />
 
-            <EmissionTrendChart data={monthlyByCompany} companies={companies} />
+            <EmissionTrendChart data={mergedMonthlyData} companies={companies} />
 
             <CompanyBarChart data={totalByCompany} />
         </div>

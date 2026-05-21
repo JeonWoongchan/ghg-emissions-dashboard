@@ -2,6 +2,7 @@
 
 import {
     getImprovingCompanyCount,
+    getMergedMonthlyData,
     getMonthlyByCompany,
     getMonthlyTotals,
     getMonthOverMonthChange,
@@ -14,11 +15,12 @@ import { useMemo } from 'react';
 export function useDashboardMetrics(companies: Company[]) {
     return useMemo(() => {
         const monthlyTotals = getMonthlyTotals(companies);
+        const monthlyByCompany = getMonthlyByCompany(companies);
         return {
             monthlyTotals,
             momChange: getMonthOverMonthChange(monthlyTotals),
             totalByCompany: getTotalByCompany(companies),
-            monthlyByCompany: getMonthlyByCompany(companies),
+            mergedMonthlyData: getMergedMonthlyData(monthlyByCompany, monthlyTotals),
             improvingCount: getImprovingCompanyCount(companies),
         };
     }, [companies]);

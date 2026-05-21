@@ -1,19 +1,9 @@
 // 대시보드 상단 KPI 요약 카드 4종 렌더링
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatEmissions, formatYearMonth } from '@/lib/format';
 import type { CompanyTotal, MonthlyTotal } from '@/lib/emissions';
 import { Activity, Building2, TrendingDown, TrendingUp } from 'lucide-react';
-
-// yearMonth 문자열을 "YYYY년 M월" 형식으로 변환
-function formatYearMonth(ym: string): string {
-    const [year, month] = ym.split('-');
-    return `${year}년 ${parseInt(month)}월`;
-}
-
-// 배출량 숫자를 천 단위 구분자 포함 문자열로 변환
-function formatEmissions(value: number): string {
-    return value.toLocaleString('ko-KR');
-}
 
 // 전월 대비 변화율 부호 및 색상 클래스 반환
 function getTrendProps(change: number | null) {

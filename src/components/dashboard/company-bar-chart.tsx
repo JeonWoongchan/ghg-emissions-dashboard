@@ -1,24 +1,26 @@
 'use client';
 
-// 회사별 연간 총 배출량 비교 수평 바 차트 렌더링
+// 연간 배출량 상위 5개 회사 비교 바 차트 렌더링
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { CHART_COLORS } from '@/constants/chart';
+import { ROUTES } from '@/constants/navigation';
 import type { CompanyTotal } from '@/lib/emissions';
+import { formatCompanyName, formatEmissions } from '@/lib/format';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+
+// 대시보드에서 표시할 상위 회사 수
+const TOP_N = 10;
 
 type Props = {
     data: CompanyTotal[];
 };
 
-// 회사명 축 레이블 — 긴 이름 말줄임
-const formatCompanyName = (name: string) =>
-    name.length > 14 ? `${name.slice(0, 14)}…` : name;
-
-// 회사별 연간 총 배출량 수평 바 차트 렌더링
+// 연간 배출량 상위 N개 회사 수평 바 차트 렌더링
 export function CompanyBarChart({ data }: Props) {
-    // Recharts는 데이터 객체에 fill 필드가 있으면 각 바에 자동 적용
-    const coloredData = data.map((entry, i) => ({
+    const topData = data.slice(0, TOP_N).map((entry, i) => ({
         ...entry,
         fill: CHART_COLORS[i % CHART_COLORS.length],
     }));
@@ -26,13 +28,13 @@ export function CompanyBarChart({ data }: Props) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>회사별 연간 총 배출량</CardTitle>
-                <CardDescription>2024년 누적 온실가스 배출량 비교 (tCO₂e)</CardDescription>
+                <CardTitle>연간 배출량 상위 {TOP_N}개 회사</CardTitle>
+                <CardDescription>2024년 누적 온실가스 배출량 기준 (tCO₂e)</CardDescription>
             </CardHeader>
             <CardContent>
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={220}>
                     <BarChart
-                        data={coloredData}
+                        data={topData}
                         layout="vertical"
                         margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
                     >
@@ -55,7 +57,7 @@ export function CompanyBarChart({ data }: Props) {
                         <Tooltip
                             formatter={(value) => [
                                 typeof value === 'number'
-                                    ? `${value.toLocaleString('ko-KR')} tCO₂e`
+                                    ? `${formatEmissions(value)} tCO₂e`
                                     : '-',
                                 '연간 총 배출량',
                             ]}
@@ -70,6 +72,16 @@ export function CompanyBarChart({ data }: Props) {
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
+            {/* 전체 회사 목록 페이지 링크 */}
+            <CardFooter className="border-t pt-4">
+                <Link
+                    href={ROUTES.companies}
+                    className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    전체 회사 목록 보기
+                    <ArrowRight className="size-4" />
+                </Link>
+            </CardFooter>
         </Card>
     );
 }
