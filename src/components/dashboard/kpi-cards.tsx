@@ -21,7 +21,7 @@ function AnnualEmissionsCard({
     return (
         <MetricCard
             title="연간 총 배출량"
-            tooltip="선택한 연도의 관리 대상 전체 온실가스 배출량 합산입니다. 상단 연도 선택기로 연도를 변경할 수 있습니다."
+            tooltip="선택한 연도의 관리 대상 전체 온실가스 배출량 합산입니다. 변화율은 작년 같은 기간(1월~최신 월) 대비 증감률이며, 상단 연도 선택기로 연도를 변경할 수 있습니다."
             value={formatEmissions(total)}
             helper={
                 yoyChange !== null
@@ -46,7 +46,7 @@ function MonthlyEmissionsCard({
     return (
         <MetricCard
             title="최근 월 배출량"
-            tooltip="선택 연도의 마지막 월 배출량과 전년 동월 대비 증감률입니다. 초록색은 감소(개선), 빨간색은 증가(악화)를 나타냅니다."
+            tooltip="선택 연도의 마지막 월(최신 데이터) 배출량입니다. 변화율은 전년 같은 달 대비 증감률이며, 초록색은 감소(개선), 빨간색은 증가(악화)를 나타냅니다."
             value={
                 latest ? (
                     <>

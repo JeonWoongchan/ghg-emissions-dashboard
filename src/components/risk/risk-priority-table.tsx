@@ -45,7 +45,12 @@ export function RiskPriorityTable({ assessments, year }: Props) {
                                         />
                                     </span>
                                 </th>
-                                <th scope="col" className="py-3 pr-4 text-center font-medium">최근 추세</th>
+                                <th scope="col" className="py-3 pr-4 text-center font-medium">
+                                    <span className="inline-flex items-center gap-0.5">
+                                        최근 추세
+                                        <InfoTooltip content="최근 3개월 평균 배출량과 그 직전 3개월 평균을 비교한 증감률입니다. 연간 성과가 아닌 지금 이 순간의 배출 모멘텀을 나타내며, 대시보드의 전년 동기 비교와 기준이 다릅니다." />
+                                    </span>
+                                </th>
                                 <th scope="col" className="py-3 pr-4 text-center font-medium">주요 Scope</th>
                                 <th scope="col" className="py-3 font-medium">주요 정보</th>
                             </tr>

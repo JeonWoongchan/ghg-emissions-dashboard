@@ -76,7 +76,8 @@ export function getRiskAssessments(
     return companies
         .map((company) => {
             const emissions = filterByYear(company.emissions, year);
-            return assessCompanyRisk(company, emissions, maxAnnualEmissions, taxRate);
+            // 추세 계산은 연도 경계를 넘어 최근 N개월을 사용하도록 전체 emissions 전달
+            return assessCompanyRisk(company, emissions, company.emissions, maxAnnualEmissions, taxRate);
         })
         .sort((a, b) => b.score - a.score || b.annualEmissions - a.annualEmissions);
 }
@@ -107,7 +108,8 @@ export function getRiskSummary(assessments: RiskAssessment[]): RiskSummary {
 // 개별 회사 리스크 산정
 function assessCompanyRisk(
     company: Company,
-    emissions: GhgEmission[],
+    emissions: GhgEmission[],      // 선택 연도 배출량 — 연간·Scope 계산용
+    allEmissions: GhgEmission[],   // 전체 배출량 — 연도 경계를 넘는 추세 계산용
     maxAnnualEmissions: number,
     taxRate: number
 ): RiskAssessment {
@@ -123,8 +125,8 @@ function assessCompanyRisk(
         ? dominantScopeItem.scope
         : null;
     const dominantScopePct = dominantScopeItem ? dominantScopeItem.pct : 0;
-    // 최근 기간 배출 증가율 산정
-    const recentTrendPct = getRecentTrendPct(getMonthlyTotals(emissions));
+    // 최근 N개월 추세 — 연도 경계를 넘어 계산하도록 전체 데이터 사용
+    const recentTrendPct = getRecentTrendPct(getMonthlyTotals(allEmissions));
 
     // 배출량·추세·Scope 구성 점수 합산
     const emissionScore = getEmissionScore(annualEmissions, maxAnnualEmissions);
