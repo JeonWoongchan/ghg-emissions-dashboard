@@ -36,3 +36,11 @@ export const TREND_SCORE_CAP_PCT = 30;
 export const HIGH_SCOPE_SHARE_PCT = 45;
 // 주요 Scope 사유 문구를 표시하는 최소 비중 기준
 export const MEDIUM_SCOPE_SHARE_PCT = 35;
+
+// Scope 구성 점수 배율 — 감축 난이도 기준 (Scope 3 > 2 > 1)
+export const SCOPE3_SCORE_MULTIPLIER = 1.0;
+export const SCOPE2_SCORE_MULTIPLIER = 0.75;
+export const SCOPE1_SCORE_MULTIPLIER = 0.65;
+
+// 배출량 규모 점수 — 상위권 기준 배율
+export const HIGH_EMISSION_SCORE_RATIO = 0.75;

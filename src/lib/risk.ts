@@ -2,11 +2,14 @@
 
 import {
     CARBON_TAX_RATE_KRW_PER_TCO2E,
+    HIGH_EMISSION_SCORE_RATIO,
     HIGH_SCOPE_SHARE_PCT,
     MEDIUM_SCOPE_SHARE_PCT,
     RECENT_TREND_MONTH_COUNT,
     RISK_LEVEL_THRESHOLDS,
     RISK_SCORE_WEIGHTS,
+    SCOPE1_SCORE_MULTIPLIER,
+    SCOPE2_SCORE_MULTIPLIER,
     TREND_SCORE_CAP_PCT,
 } from '@/constants/risk';
 import { SCOPE_DESCRIPTIONS } from '@/constants/ghg-scope';
@@ -172,8 +175,8 @@ function getScopeScore(scopeBreakdown: Array<{ scope: 1 | 2 | 3; pct: number }>)
     const scope1Pct = scopeBreakdown.find((item) => item.scope === 1)?.pct ?? 0;
 
     if (scope3Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope;
-    if (scope2Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * 0.75;
-    if (scope1Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * 0.65;
+    if (scope2Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * SCOPE2_SCORE_MULTIPLIER;
+    if (scope1Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * SCOPE1_SCORE_MULTIPLIER;
 
     return (Math.max(scope1Pct, scope2Pct, scope3Pct) / 100) * RISK_SCORE_WEIGHTS.scope;
 }
@@ -206,7 +209,7 @@ function getRiskReasons(input: RiskReasonInput): string[] {
     // 조건별 사유 규칙 목록 구성
     const rules: RiskReasonRule[] = [
         {
-            matches: () => emissionScore >= RISK_SCORE_WEIGHTS.emissions * 0.75,
+            matches: () => emissionScore >= RISK_SCORE_WEIGHTS.emissions * HIGH_EMISSION_SCORE_RATIO,
             message: () => '연간 배출량이 관리 대상 중 상위권입니다.',
         },
         {

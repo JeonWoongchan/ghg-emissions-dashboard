@@ -2,6 +2,7 @@
 
 // 리스크 관리 페이지 데이터 패칭 및 레이아웃 구성
 
+import { EmptyState } from '@/components/shared/empty-state';
 import { ErrorState } from '@/components/shared/error-state';
 import { YearSelector } from '@/components/shared/year-selector';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -37,7 +38,8 @@ export function RiskContent() {
     );
 
     if (isLoading) return <RiskSkeleton />;
-    if (error || !companies?.length) return <ErrorState onRetry={refetch} />;
+    if (error) return <ErrorState onRetry={refetch} />;
+    if (!companies?.length) return <EmptyState message="등록된 관리 대상 회사가 없습니다." />;
 
     return (
         <div className="space-y-6">
