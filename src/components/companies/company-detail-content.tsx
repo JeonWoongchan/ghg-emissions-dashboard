@@ -21,15 +21,19 @@ import { formatEmissions } from '@/lib/format';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useMemo } from 'react';
 import { CompanyMonthlyChart } from './company-monthly-chart';
+import { CompanyRiskCard } from './company-risk-card';
 import { CompanyScopeChart } from './company-scope-chart';
 import { CompanySourceChart } from './company-source-chart';
 import { CompanyPosts } from '@/components/posts/company-posts';
+import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
+import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
 
 // 회사 상세 로딩 중 스켈레톤
 function CompanyDetailSkeleton() {
     return (
         <div className="space-y-6">
             <Skeleton className="h-16 w-64 rounded-xl" />
+            <Skeleton className="h-[160px] rounded-xl" />
             <Skeleton className="h-[280px] rounded-xl" />
             <Skeleton className="h-[200px] rounded-xl" />
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -56,6 +60,8 @@ export function CompanyDetailContent({ id }: { id: string }) {
         [company]
     );
     const selectedYear = getSelectedYear(yearParam, availableYears);
+    // Rules of Hooks: 조건부 반환 전에 호출 — company 미로드 시 null 반환
+    const riskAssessment = useCompanyRisk(company?.id ?? '', selectedYear);
 
     if (isLoading) return <CompanyDetailSkeleton />;
     if (error || !company) return <ErrorState onRetry={refetch} />;
@@ -79,6 +85,7 @@ export function CompanyDetailContent({ id }: { id: string }) {
                         <span className="text-muted-foreground">
                             {flag} {company.country}
                         </span>
+                        {riskAssessment && <RiskLevelBadge level={riskAssessment.level} />}
                     </div>
                     <p className="text-muted-foreground">
                         {selectedYear}년 연간 총 배출량:{' '}
@@ -93,6 +100,9 @@ export function CompanyDetailContent({ id }: { id: string }) {
                     onChangeAction={(y) => void setYearParam(y)}
                 />
             </div>
+
+            {/* 리스크 분석 카드 — 등급·노출액·추세·사유 통합 */}
+            {riskAssessment && <CompanyRiskCard assessment={riskAssessment} />}
 
             {/* 월별 Scope 스택 에어리어 차트 */}
             <CompanyMonthlyChart data={monthlyByScope} year={selectedYear} />

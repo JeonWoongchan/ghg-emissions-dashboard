@@ -37,6 +37,20 @@ export const HIGH_SCOPE_SHARE_PCT = 45;
 // 주요 Scope 사유 문구를 표시하는 최소 비중 기준
 export const MEDIUM_SCOPE_SHARE_PCT = 35;
 
+// 리스크 등급별 시각 색상 — high=빨강, medium=노랑, low=파랑으로 통일
+// 뱃지(RISK_LEVEL_CLASS_NAMES)와 프로그레스 바(RISK_BAR_COLORS)가 같은 색상 사용
+export const RISK_LEVEL_CLASS_NAMES: Record<string, string> = {
+    high: 'bg-destructive/10 text-destructive border-destructive/20',
+    medium: 'bg-[var(--chart-3)]/10 text-[var(--chart-3)] border-[var(--chart-3)]/20',
+    low: 'bg-[var(--chart-2)]/10 text-[var(--chart-2)] border-[var(--chart-2)]/20',
+};
+
+export const RISK_BAR_COLORS: Record<string, string> = {
+    high: 'var(--destructive)',
+    medium: 'var(--chart-3)',
+    low: 'var(--chart-2)',
+};
+
 // Scope 구성 점수 배율 — 감축 난이도 기준 (Scope 3 > 2 > 1)
 export const SCOPE3_SCORE_MULTIPLIER = 1.0;
 export const SCOPE2_SCORE_MULTIPLIER = 0.75;
