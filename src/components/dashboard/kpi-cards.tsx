@@ -54,11 +54,12 @@ function TopEmitterCard({ company }: { company: CompanyTotal | undefined }) {
     return (
         <MetricCard
             title="최대 배출 관리 대상"
-            tooltip="선택 연도 기준 누적 배출량이 가장 많은 관리 대상 회사입니다. 아래 기업별 차트에서 막대를 클릭하면 해당 기업 상세 페이지로 이동합니다."
+            tooltip="선택 연도 기준 누적 배출량이 가장 많은 관리 대상 회사입니다. 클릭하면 해당 기업 상세 페이지로 이동합니다."
             value={company?.name ?? '-'}
             helper={company ? `${formatEmissions(company.total)} tCO₂e / 연간` : '-'}
             icon={Building2}
             valueClassName="truncate"
+            href={company ? ROUTES.companyDetail(company.id) : undefined}
         />
     );
 }

@@ -3,7 +3,7 @@
 import { COUNTRY_FLAGS } from '@/constants/countries';
 import { SCOPE_LABELS } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
-import { formatEmissions, formatKrw } from '@/lib/format';
+import { formatEmissions, formatKrw, getTrendProps } from '@/lib/format';
 import type { RiskAssessment } from '@/lib/risk';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -13,16 +13,6 @@ type Props = {
     assessment: RiskAssessment;
 };
 
-// 최근 추세 변화율 표시값 산정
-function getTrendDisplay(value: number | null) {
-    if (value === null) return { label: '-', className: 'text-muted-foreground' };
-    const prefix = value > 0 ? '+' : '';
-    return {
-        label: `${prefix}${value.toFixed(1)}%`,
-        className: value > 0 ? 'text-destructive' : 'text-success',
-    };
-}
-
 // 주요 Scope 비중 표시값 산정
 function getDominantScopeLabel(assessment: RiskAssessment): string {
     if (!assessment.dominantScope) return '-';
@@ -30,7 +20,7 @@ function getDominantScopeLabel(assessment: RiskAssessment): string {
 }
 
 export function RiskPriorityRow({ assessment }: Props) {
-    const trend = getTrendDisplay(assessment.recentTrendPct);
+    const trend = getTrendProps(assessment.recentTrendPct);
 
     return (
         <tr className="border-b last:border-0">

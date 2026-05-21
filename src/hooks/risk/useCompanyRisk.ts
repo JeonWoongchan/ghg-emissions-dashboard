@@ -5,13 +5,24 @@ import { getRiskAssessments } from '@/lib/risk';
 import type { RiskAssessment } from '@/lib/risk';
 import { useMemo } from 'react';
 
-export function useCompanyRisk(companyId: string, year: number): RiskAssessment | null {
+export type CompanyRiskResult = {
+    assessment: RiskAssessment | null;
+    rank: number | null;
+    total: number;
+};
+
+export function useCompanyRisk(companyId: string, year: number): CompanyRiskResult {
     const { data: companies } = useCompanies();
 
     return useMemo(() => {
-        if (!companies) return null;
-        // 상대 배출량 점수 산정을 위해 전체 목록 기준으로 평가
-        const map = new Map(getRiskAssessments(companies, year).map((a) => [a.id, a]));
-        return map.get(companyId) ?? null;
+        if (!companies) return { assessment: null, rank: null, total: 0 };
+        // getRiskAssessments는 점수 내림차순 정렬 → index + 1 = 리스크 순위
+        const assessments = getRiskAssessments(companies, year);
+        const index = assessments.findIndex((a) => a.id === companyId);
+        return {
+            assessment: index >= 0 ? assessments[index] : null,
+            rank: index >= 0 ? index + 1 : null,
+            total: assessments.length,
+        };
     }, [companies, companyId, year]);
 }

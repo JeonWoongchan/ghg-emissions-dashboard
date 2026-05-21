@@ -47,7 +47,7 @@ export function RiskPriorityTable({ assessments, year }: Props) {
                                 </th>
                                 <th scope="col" className="py-3 pr-4 text-center font-medium">최근 추세</th>
                                 <th scope="col" className="py-3 pr-4 text-center font-medium">주요 Scope</th>
-                                <th scope="col" className="py-3 font-medium">리스크 사유</th>
+                                <th scope="col" className="py-3 font-medium">주요 정보</th>
                             </tr>
                         </thead>
                         <tbody>

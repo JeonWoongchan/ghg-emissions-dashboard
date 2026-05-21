@@ -11,10 +11,14 @@ import { formatKrw, getTrendProps } from '@/lib/format';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-type Props = { assessment: RiskAssessment };
+type Props = {
+    assessment: RiskAssessment;
+    rank: number | null;
+    total: number;
+};
 
 // 리스크 분석 요약 카드 렌더링
-export function CompanyRiskCard({ assessment }: Props) {
+export function CompanyRiskCard({ assessment, rank, total }: Props) {
     const { level, score, estimatedTaxKrw, recentTrendPct, reasons } = assessment;
     const trend = getTrendProps(recentTrendPct);
 
@@ -39,7 +43,15 @@ export function CompanyRiskCard({ assessment }: Props) {
                 <div className="mt-2 space-y-1.5">
                     <div className="flex justify-between text-xs text-muted-foreground">
                         <span>리스크 점수</span>
-                        <span className="font-medium text-foreground">{score}점 / 100점</span>
+                        <div className="flex items-center gap-2">
+                            {rank !== null && (
+                                <span>
+                                    전체 {total}개사 중{' '}
+                                    <span className="font-medium text-foreground">{rank}위</span>
+                                </span>
+                            )}
+                            <span className="font-medium text-foreground">{score}점 / 100점</span>
+                        </div>
                     </div>
                     <div className="h-2 overflow-hidden rounded-full bg-muted">
                         <div
@@ -71,7 +83,7 @@ export function CompanyRiskCard({ assessment }: Props) {
 
                     {/* 주요 사유 */}
                     <div>
-                        <p className="mb-2 text-xs text-muted-foreground">주요 리스크 사유</p>
+                        <p className="mb-2 text-xs text-muted-foreground">주요 정보</p>
                         <ul className="space-y-2">
                             {reasons.map((reason, i) => (
                                 <li key={i} className="flex items-start gap-2 text-sm">

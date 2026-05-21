@@ -61,7 +61,7 @@ export function CompanyDetailContent({ id }: { id: string }) {
     );
     const selectedYear = getSelectedYear(yearParam, availableYears);
     // Rules of Hooks: 조건부 반환 전에 호출 — company 미로드 시 null 반환
-    const riskAssessment = useCompanyRisk(company?.id ?? '', selectedYear);
+    const { assessment: riskAssessment, rank: riskRank, total: riskTotal } = useCompanyRisk(company?.id ?? '', selectedYear);
 
     if (isLoading) return <CompanyDetailSkeleton />;
     if (error || !company) return <ErrorState onRetry={refetch} />;
@@ -102,7 +102,9 @@ export function CompanyDetailContent({ id }: { id: string }) {
             </div>
 
             {/* 리스크 분석 카드 — 등급·노출액·추세·사유 통합 */}
-            {riskAssessment && <CompanyRiskCard assessment={riskAssessment} />}
+            {riskAssessment && (
+                <CompanyRiskCard assessment={riskAssessment} rank={riskRank} total={riskTotal} />
+            )}
 
             {/* 월별 Scope 스택 에어리어 차트 */}
             <CompanyMonthlyChart data={monthlyByScope} year={selectedYear} />
