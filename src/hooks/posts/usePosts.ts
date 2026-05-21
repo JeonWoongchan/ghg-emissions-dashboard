@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createOrUpdatePost, deletePost, fetchPosts } from '@/lib/api';
-import { queryKeys } from './queryKeys';
+import { queryKeys } from '@/hooks/queryKeys';
 import type { Post } from '@/types';
 
 export function usePosts() {

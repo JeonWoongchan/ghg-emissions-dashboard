@@ -4,8 +4,8 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/shared/error-state';
-import { useCompanies } from '@/hooks/useCompanies';
-import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
+import { useCompanies } from '@/hooks/companies/useCompanies';
+import { useDashboardMetrics } from '@/hooks/dashboard/useDashboardMetrics';
 import { CompanyBarChart } from './company-bar-chart';
 import { EmissionTrendChart } from './emission-trend-chart';
 import { KpiCards } from './kpi-cards';

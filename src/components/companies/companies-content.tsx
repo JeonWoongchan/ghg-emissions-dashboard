@@ -13,7 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SORT_OPTIONS, useCompaniesFilter } from '@/hooks/useCompaniesFilter';
+import { SORT_OPTIONS, useCompaniesFilter } from '@/hooks/companies/useCompaniesFilter';
 import { useState } from 'react';
 import { CompanyCard } from './company-card';
 

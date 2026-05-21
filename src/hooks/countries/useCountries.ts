@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCountries } from '@/lib/api';
-import { queryKeys } from './queryKeys';
+import { queryKeys } from '@/hooks/queryKeys';
 import { STALE_TIME } from '@/constants/cache';
 
 export function useCountries() {

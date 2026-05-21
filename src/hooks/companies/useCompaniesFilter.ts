@@ -1,7 +1,7 @@
 // 회사 목록 필터·정렬 상태 관리 훅
 
-import { useCompanies } from '@/hooks/useCompanies';
-import { useCountries } from '@/hooks/useCountries';
+import { useCompanies } from '@/hooks/companies/useCompanies';
+import { useCountries } from '@/hooks/countries/useCountries';
 import type { CompanyWithTotal } from '@/types';
 import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
