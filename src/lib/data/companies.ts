@@ -1,5 +1,10 @@
 import type { Company, GhgEmission } from '@/types';
 
+// 현재 시점 기준 데이터 컷오프 — 이후 월은 미입력 상태로 제외
+const DATA_CUTOFF_MONTH = '2026-05';
+const upTo = (emissions: GhgEmission[]) =>
+    emissions.filter((e) => e.yearMonth <= DATA_CUTOFF_MONTH);
+
 // 기준 연도 배출량에 연도 및 스케일 팩터를 적용해 다년 데이터 생성
 function scaleToYear(
     base: GhgEmission[],
@@ -455,7 +460,7 @@ export const companies: Company[] = [
             ...scaleToYear(ACME_2024, '2023', 1.12),
             ...ACME_2024,
             ...scaleToYear(ACME_2024, '2025', 0.90),
-            ...scaleToYear(ACME_2024, '2026', 0.82),
+            ...upTo(scaleToYear(ACME_2024, '2026', 0.82)),
         ],
     },
     {
@@ -466,7 +471,7 @@ export const companies: Company[] = [
             ...scaleToYear(GREEN_2024, '2023', 0.90),
             ...GREEN_2024,
             ...scaleToYear(GREEN_2024, '2025', 1.08),
-            ...scaleToYear(GREEN_2024, '2026', 1.05),
+            ...upTo(scaleToYear(GREEN_2024, '2026', 1.05)),
         ],
     },
     {
@@ -477,7 +482,7 @@ export const companies: Company[] = [
             ...scaleToYear(SEOUL_2024, '2023', 1.08),
             ...SEOUL_2024,
             ...scaleToYear(SEOUL_2024, '2025', 0.97),
-            ...scaleToYear(SEOUL_2024, '2026', 0.94),
+            ...upTo(scaleToYear(SEOUL_2024, '2026', 0.94)),
         ],
     },
     {
@@ -497,10 +502,10 @@ export const companies: Company[] = [
                 businessTravel: 0.90,
             }),
             // 2026: 추가 에너지 효율화
-            ...scaleToYear(TOKYO_2024, '2026', 1.0, {
+            ...upTo(scaleToYear(TOKYO_2024, '2026', 1.0, {
                 electricity: 0.40,
                 businessTravel: 0.85,
-            }),
+            })),
         ],
     },
     {
@@ -511,7 +516,7 @@ export const companies: Company[] = [
             ...scaleToYear(PACIFIC_2024, '2023', 0.85),
             ...PACIFIC_2024,
             ...scaleToYear(PACIFIC_2024, '2025', 1.12),
-            ...scaleToYear(PACIFIC_2024, '2026', 1.18),
+            ...upTo(scaleToYear(PACIFIC_2024, '2026', 1.18)),
         ],
     },
     {
@@ -522,7 +527,7 @@ export const companies: Company[] = [
             ...scaleToYear(LONDON_2024, '2023', 1.10),
             ...LONDON_2024,
             ...scaleToYear(LONDON_2024, '2025', 0.93),
-            ...scaleToYear(LONDON_2024, '2026', 0.88),
+            ...upTo(scaleToYear(LONDON_2024, '2026', 0.88)),
         ],
     },
     {
@@ -533,7 +538,7 @@ export const companies: Company[] = [
             ...scaleToYear(RENAULT_2024, '2023', 1.15),
             ...RENAULT_2024,
             ...scaleToYear(RENAULT_2024, '2025', 0.88),
-            ...scaleToYear(RENAULT_2024, '2026', 0.80),
+            ...upTo(scaleToYear(RENAULT_2024, '2026', 0.80)),
         ],
     },
     {
@@ -544,7 +549,7 @@ export const companies: Company[] = [
             ...scaleToYear(OUTBACK_2024, '2023', 0.92),
             ...OUTBACK_2024,
             ...scaleToYear(OUTBACK_2024, '2025', 1.06),
-            ...scaleToYear(OUTBACK_2024, '2026', 1.10),
+            ...upTo(scaleToYear(OUTBACK_2024, '2026', 1.10)),
         ],
     },
     {
@@ -555,7 +560,7 @@ export const companies: Company[] = [
             ...scaleToYear(NORDIC_2024, '2023', 1.08),
             ...NORDIC_2024,
             ...scaleToYear(NORDIC_2024, '2025', 0.92),
-            ...scaleToYear(NORDIC_2024, '2026', 0.85),
+            ...upTo(scaleToYear(NORDIC_2024, '2026', 0.85)),
         ],
     },
     {
@@ -566,7 +571,7 @@ export const companies: Company[] = [
             ...scaleToYear(SINGA_2024, '2023', 0.88),
             ...SINGA_2024,
             ...scaleToYear(SINGA_2024, '2025', 1.05),
-            ...scaleToYear(SINGA_2024, '2026', 1.03),
+            ...upTo(scaleToYear(SINGA_2024, '2026', 1.03)),
         ],
     },
 ];

@@ -34,7 +34,7 @@ export function DashboardContent() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
     const [yearParam, setYearParam] = useQueryState('year', parseAsInteger);
 
-    const { selectedYear, availableYears, yearlyTotals, monthlyTotals, momChange, totalByCompany, mergedMonthlyData, riskSummary } =
+    const { selectedYear, availableYears, yearlyTotals, monthlyTotals, momChange, totalByCompany, mergedMonthlyData, riskSummary, improvingCount, yoyChange, momYoyChange } =
         useDashboardMetrics(companies ?? [], yearParam);
 
     if (isLoading) return <DashboardSkeleton />;
@@ -58,7 +58,10 @@ export function DashboardContent() {
                 year={selectedYear}
                 monthlyTotals={monthlyTotals}
                 momChange={momChange}
-                totalByCompany={totalByCompany}
+                momYoyChange={momYoyChange}
+                improvingCount={improvingCount}
+                totalCompanies={companies.length}
+                yoyChange={yoyChange}
                 riskSummary={riskSummary}
             />
 

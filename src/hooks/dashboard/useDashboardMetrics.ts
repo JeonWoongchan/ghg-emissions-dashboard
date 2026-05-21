@@ -4,6 +4,7 @@ import {
     filterByYear,
     getAnnualTotals,
     getAvailableYears,
+    getImprovingCompanyCount,
     getMergedMonthlyData,
     getMonthlyByCompany,
     getMonthlyTotals,
@@ -30,18 +31,56 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
         const monthlyTotals = getMonthlyTotals(filtered);
         const monthlyByCompany = getMonthlyByCompany(filtered);
         const totalByCompany = getTotalByCompany(filtered);
+        const yearlyTotals = getAnnualTotals(allEmissions);
         // 리스크 요약은 대시보드 KPI 카드 및 Risk 진입점 표시에 사용
         const riskSummary = getRiskSummary(getRiskAssessments(companies, selectedYear));
+
+        // 작년 같은 기간 대비 변화율 — 현재 연도의 최신 월까지만 비교
+        const currentPeriodTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0);
+        const prevYearMonths = monthlyTotals.map((m) =>
+            `${parseInt(m.month.slice(0, 4)) - 1}${m.month.slice(4)}`
+        );
+        const prevPeriodTotal = Math.round(
+            companies
+                .flatMap((c) => c.emissions)
+                .filter((e) => prevYearMonths.includes(e.yearMonth))
+                .reduce((sum, e) => sum + e.emissions, 0)
+        );
+        const yoyChange =
+            prevPeriodTotal > 0
+                ? ((currentPeriodTotal - prevPeriodTotal) / prevPeriodTotal) * 100
+                : null;
+
+        // 최신 월의 전년 동월 대비 변화율
+        const latestMonth = monthlyTotals[monthlyTotals.length - 1] ?? null;
+        const prevYearSameMonth = latestMonth
+            ? `${parseInt(latestMonth.month.slice(0, 4)) - 1}${latestMonth.month.slice(4)}`
+            : null;
+        const prevYearSameMonthTotal = prevYearSameMonth
+            ? Math.round(
+                  companies
+                      .flatMap((c) => c.emissions)
+                      .filter((e) => e.yearMonth === prevYearSameMonth)
+                      .reduce((sum, e) => sum + e.emissions, 0)
+              )
+            : null;
+        const momYoyChange =
+            latestMonth && prevYearSameMonthTotal && prevYearSameMonthTotal > 0
+                ? ((latestMonth.total - prevYearSameMonthTotal) / prevYearSameMonthTotal) * 100
+                : null;
+
         return {
             selectedYear,
             availableYears,
-            // 연도 필터 적용 전 전체 데이터로 연도별 비교 차트용 집계
-            yearlyTotals: getAnnualTotals(allEmissions),
+            yearlyTotals,
             monthlyTotals,
             momChange: getMonthOverMonthChange(monthlyTotals),
             totalByCompany,
             mergedMonthlyData: getMergedMonthlyData(monthlyByCompany, monthlyTotals),
             riskSummary,
+            improvingCount: getImprovingCompanyCount(filtered),
+            yoyChange,
+            momYoyChange,
         };
     }, [companies, year]);
 }
