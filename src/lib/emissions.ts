@@ -147,6 +147,14 @@ export function getAvailableYears(emissions: GhgEmission[]): number[] {
     return Array.from(years).sort((a, b) => b - a);
 }
 
+// URL 파라미터·함수 인자 연도를 사용 가능한 연도 목록과 조합해 최종 연도 반환
+export function getSelectedYear(
+    yearParam: number | null | undefined,
+    availableYears: number[]
+): number {
+    return yearParam ?? availableYears[0] ?? new Date().getFullYear();
+}
+
 // 특정 연도의 배출량만 필터링
 export function filterByYear(emissions: GhgEmission[], year: number): GhgEmission[] {
     const prefix = `${year}-`;

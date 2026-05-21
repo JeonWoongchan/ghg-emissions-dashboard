@@ -2,9 +2,9 @@
 
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useCountries } from '@/hooks/countries/useCountries';
-import { filterByYear, getAvailableYears } from '@/lib/emissions';
+import { filterByYear, getAvailableYears, getSelectedYear } from '@/lib/emissions';
 import type { CompanyWithTotal } from '@/types';
-import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
+import { parseAsArrayOf, parseAsInteger, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
 export const SORT_OPTIONS = [
@@ -27,6 +27,7 @@ export function useCompaniesFilter() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
     const { data: countries } = useCountries();
 
+    const [yearParam, setYearParam] = useQueryState('year', parseAsInteger);
     const [selectedCountries, setSelectedCountries] = useQueryState('country', countryParser);
     const [sortOrder, setSortOrder] = useQueryState('sort', sortParser);
 
@@ -36,12 +37,12 @@ export function useCompaniesFilter() {
         [countries]
     );
 
-    // 데이터에서 사용 가능한 연도 목록 — 최신 연도를 기본값으로 사용
+    // 데이터에서 사용 가능한 연도 목록
     const availableYears = useMemo(
         () => (companies ? getAvailableYears(companies.flatMap((c) => c.emissions)) : []),
         [companies]
     );
-    const selectedYear = availableYears[0] ?? new Date().getFullYear();
+    const selectedYear = getSelectedYear(yearParam, availableYears);
 
     // 데이터에 존재하는 국가 목록 — 국가명 병합
     const countryOptions = useMemo(() => {
@@ -112,5 +113,6 @@ export function useCompaniesFilter() {
         setSortOrder,
         selectedYear,
         availableYears,
+        setSelectedYear: useCallback((y: number) => { void setYearParam(y); }, [setYearParam]),
     };
 }

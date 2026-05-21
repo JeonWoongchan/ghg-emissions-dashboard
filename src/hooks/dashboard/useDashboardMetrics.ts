@@ -8,18 +8,18 @@ import {
     getMonthlyByCompany,
     getMonthlyTotals,
     getMonthOverMonthChange,
+    getSelectedYear,
     getTotalByCompany,
 } from '@/lib/emissions';
 import type { Company } from '@/types';
 import { useMemo } from 'react';
 
 // 대시보드 표시에 필요한 집계 지표 일괄 계산 및 메모이제이션
-export function useDashboardMetrics(companies: Company[], year?: number) {
+export function useDashboardMetrics(companies: Company[], year?: number | null) {
     return useMemo(() => {
         const allEmissions = companies.flatMap((c) => c.emissions);
         const availableYears = getAvailableYears(allEmissions);
-        // year 미지정 시 데이터 내 최신 연도 사용
-        const selectedYear = year ?? availableYears[0] ?? new Date().getFullYear();
+        const selectedYear = getSelectedYear(year, availableYears);
 
         const filtered = companies.map((c) => ({
             ...c,

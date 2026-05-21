@@ -5,6 +5,7 @@
 import { EmptyState } from '@/components/shared/empty-state';
 import { ErrorState } from '@/components/shared/error-state';
 import { MultiSelectPopover } from '@/components/shared/multi-select-popover';
+import { YearSelector } from '@/components/shared/year-selector';
 import {
     Select,
     SelectContent,
@@ -48,6 +49,8 @@ export function CompaniesContent() {
         sortOrder,
         setSortOrder,
         selectedYear,
+        availableYears,
+        setSelectedYear,
     } = useCompaniesFilter();
 
     const [countryOpen, setCountryOpen] = useState(false);
@@ -74,6 +77,13 @@ export function CompaniesContent() {
                     searchPlaceholder="국가 검색..."
                     width="w-48"
                     side="bottom"
+                />
+
+                {/* 연도 선택 */}
+                <YearSelector
+                    years={availableYears}
+                    value={selectedYear}
+                    onChangeAction={setSelectedYear}
                 />
 
                 {/* 정렬 */}
