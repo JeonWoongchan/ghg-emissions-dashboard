@@ -9,12 +9,12 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { ROUTES } from '@/constants/navigation';
-import { BarChart3, Building2 } from 'lucide-react';
+import { Building2, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
-    { title: '대시보드', href: ROUTES.dashboard, icon: BarChart3 },
+    { title: '대시보드', href: ROUTES.dashboard, icon: LayoutDashboard },
     { title: '회사 목록', href: ROUTES.companies, icon: Building2 },
 ];
 

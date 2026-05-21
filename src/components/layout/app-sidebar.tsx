@@ -3,6 +3,7 @@
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -38,6 +39,13 @@ export function AppSidebar() {
             <SidebarContent>
                 <SidebarNav />
             </SidebarContent>
+            <SidebarFooter className="border-t px-3 py-3">
+                <div className="group-data-[collapsible=icon]:hidden space-y-2">
+                    <p className="text-xs font-medium text-foreground">GHG Emissions Dashboard</p>
+                    <p className="text-xs text-muted-foreground">HanaLoop · PCF 관리 플랫폼</p>
+                    <p className="text-xs text-muted-foreground">© 2026 HanaLoop. All rights reserved.</p>
+                </div>
+            </SidebarFooter>
             {/* 접힌 상태에서 마우스오버 시 사이드바를 펼치는 핸들 */}
             <SidebarRail />
         </Sidebar>
