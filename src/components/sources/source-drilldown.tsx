@@ -2,6 +2,7 @@
 
 // 선택 배출원 드릴다운 — 회사별 분포 + 월별 추이
 
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SOURCE_LABELS } from '@/constants/ghg-scope';
@@ -24,16 +25,18 @@ import {
 type Props = {
     sourceId: string;
     scope: 1 | 2 | 3;
+    color?: string;
     companyBreakdown: CompanyTotal[];
     monthlyTrend: MonthlyTotal[];
     year: number;
 };
 
 // 선택 배출원 상세 분석 카드 렌더링
-export function SourceDrilldown({ sourceId, scope, companyBreakdown, monthlyTrend, year }: Props) {
+export function SourceDrilldown({ sourceId, scope, color: colorProp, companyBreakdown, monthlyTrend, year }: Props) {
     const router = useRouter();
     const label = SOURCE_LABELS[sourceId] ?? sourceId;
-    const color = SCOPE_COLORS[scope];
+    // 도넛 shade 색상 우선, 없으면 Scope 기본색 폴백
+    const color = colorProp ?? SCOPE_COLORS[scope];
     const chartHeight = Math.max(160, companyBreakdown.length * 40);
 
     return (
@@ -41,6 +44,7 @@ export function SourceDrilldown({ sourceId, scope, companyBreakdown, monthlyTren
             <CardHeader>
                 <CardTitle>
                     <span style={{ color }}>{label}</span> 상세 분석
+                    <InfoTooltip content="위 배출원 랭킹 차트에서 항목을 클릭하면 해당 배출원의 상세 분석을 확인할 수 있습니다. 전체 탭의 막대, 또는 Scope별 탭의 도넛 슬라이스와 목록 항목을 클릭하세요." />
                 </CardTitle>
                 <CardDescription>{year}년 · 회사별 배출량 및 월별 추이</CardDescription>
             </CardHeader>

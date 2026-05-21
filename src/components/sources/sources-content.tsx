@@ -5,18 +5,16 @@
 import { ErrorState } from '@/components/shared/error-state';
 import { YearSelector } from '@/components/shared/year-selector';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SCOPE_COLORS, SCOPE_DESCRIPTIONS, SCOPE_LABELS } from '@/constants/ghg-scope';
+import { SCOPE_COLORS, SCOPE_DESCRIPTIONS, SCOPE_LABELS, getScopeSourceColorMap } from '@/constants/ghg-scope';
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useSourceMetrics } from '@/hooks/sources/useSourceMetrics';
 import { getAvailableYears, getSelectedYear } from '@/lib/emissions';
 import { formatEmissions } from '@/lib/format';
-import { parseAsInteger, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
+import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useMemo } from 'react';
 import { ReductionScenarioCard } from './reduction-scenario-card';
 import { SourceDrilldown } from './source-drilldown';
 import { SourceRankingChart } from './source-ranking-chart';
-
-const scopeParser = parseAsStringLiteral(['all', '1', '2', '3'] as const).withDefault('all');
 
 // 배출원 분석 로딩 스켈레톤
 function SourcesSkeleton() {
@@ -36,7 +34,6 @@ function SourcesSkeleton() {
 export function SourcesContent() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
     const [yearParam, setYearParam] = useQueryState('year', parseAsInteger);
-    const [scopeFilter, setScopeFilter] = useQueryState('scope', scopeParser);
     const [sourceParam, setSourceParam] = useQueryState('source', parseAsString);
 
     const availableYears = useMemo(
@@ -46,14 +43,20 @@ export function SourcesContent() {
     const selectedYear = getSelectedYear(yearParam, availableYears);
 
     const {
-        filteredSources,
+        allSources,
         activeSourceId,
         activeSource,
         scopeTotals,
         companyBreakdown,
         monthlyTrend,
         totalEmissions,
-    } = useSourceMetrics(companies ?? [], selectedYear, scopeFilter, sourceParam);
+    } = useSourceMetrics(companies ?? [], selectedYear, sourceParam);
+
+    // 배출원별 색상 맵 단일 산정
+    const sourceColorMap = useMemo(() => getScopeSourceColorMap(allSources), [allSources]);
+    const activeSourceColor = activeSource
+        ? sourceColorMap[activeSource.source] ?? SCOPE_COLORS[activeSource.scope]
+        : null;
 
     if (isLoading) return <SourcesSkeleton />;
     if (error || !companies?.length) return <ErrorState onRetry={refetch} />;
@@ -96,10 +99,9 @@ export function SourcesContent() {
 
             {/* 배출원 랭킹 차트 */}
             <SourceRankingChart
-                sources={filteredSources}
+                allSources={allSources}
                 activeSourceId={activeSourceId}
-                scopeFilter={scopeFilter}
-                onScopeChangeAction={(s) => void setScopeFilter(s as 'all' | '1' | '2' | '3')}
+                sourceColorMap={sourceColorMap}
                 onSourceSelectAction={(s) => void setSourceParam(s)}
                 year={selectedYear}
             />
@@ -109,6 +111,7 @@ export function SourcesContent() {
                 <SourceDrilldown
                     sourceId={activeSource.source}
                     scope={activeSource.scope}
+                    color={activeSourceColor ?? SCOPE_COLORS[activeSource.scope]}
                     companyBreakdown={companyBreakdown}
                     monthlyTrend={monthlyTrend}
                     year={selectedYear}

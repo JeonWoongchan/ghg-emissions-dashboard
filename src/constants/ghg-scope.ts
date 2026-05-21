@@ -33,6 +33,73 @@ export const SCOPE_COLORS: Record<1 | 2 | 3, string> = {
   3: 'var(--chart-5)',  // purple — 공급망·운송
 };
 
+// Scope별 배출원 shade 토큰
+export const SCOPE_SHADE_COLORS: Record<1 | 2 | 3, string[]> = {
+  1: [
+    'var(--scope-1-shade-1)',
+    'var(--scope-1-shade-2)',
+    'var(--scope-1-shade-3)',
+    'var(--scope-1-shade-4)',
+    'var(--scope-1-shade-5)',
+  ],
+  2: [
+    'var(--scope-2-shade-1)',
+    'var(--scope-2-shade-2)',
+    'var(--scope-2-shade-3)',
+    'var(--scope-2-shade-4)',
+    'var(--scope-2-shade-5)',
+  ],
+  3: [
+    'var(--scope-3-shade-1)',
+    'var(--scope-3-shade-2)',
+    'var(--scope-3-shade-3)',
+    'var(--scope-3-shade-4)',
+    'var(--scope-3-shade-5)',
+  ],
+};
+
+const DEFAULT_SCOPE_SHADE_COLORS = [
+  'var(--chart-1)',
+  'var(--chart-2)',
+  'var(--chart-3)',
+  'var(--chart-4)',
+  'var(--chart-5)',
+];
+
+export type ScopeSourceColorMap = Record<string, string>;
+
+type ScopeSourceColorItem = {
+  source: string;
+  scope: 1 | 2 | 3;
+};
+
+function getScopeShades(scope: string, count: number): string[] {
+  const numericScope = Number(scope);
+  const palette =
+    numericScope === 1 || numericScope === 2 || numericScope === 3
+      ? SCOPE_SHADE_COLORS[numericScope]
+      : DEFAULT_SCOPE_SHADE_COLORS;
+
+  // 요청 개수에 맞춘 shade 토큰 반복
+  return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
+}
+
+export function getScopeSourceColorMap<T extends ScopeSourceColorItem>(sources: T[]): ScopeSourceColorMap {
+  const colorMap: ScopeSourceColorMap = {};
+
+  // Scope 내부 순위 기준 배출원 색상 매핑
+  for (const scope of [1, 2, 3] as const) {
+    const scopeSources = sources.filter((source) => source.scope === scope);
+    const shades = getScopeShades(String(scope), scopeSources.length);
+
+    scopeSources.forEach((source, index) => {
+      colorMap[source.source] = shades[index] ?? SCOPE_COLORS[scope];
+    });
+  }
+
+  return colorMap;
+}
+
 // 배출원 코드 한글 레이블
 export const SOURCE_LABELS: Record<string, string> = {
   gasoline: '휘발유',

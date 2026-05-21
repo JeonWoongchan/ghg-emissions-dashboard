@@ -14,21 +14,17 @@ export type SourceItem = { source: string; total: number; scope: 1 | 2 | 3 };
 export function useSourceMetrics(
     companies: Company[],
     year: number,
-    scopeFilter: string,
     sourceId: string | null
 ) {
     return useMemo(() => {
         const allEmissions = companies.flatMap((c) => filterByYear(c.emissions, year));
         const allSources = getTotalBySource(allEmissions);
 
-        // Scope 탭 필터 적용
-        const filteredSources =
-            scopeFilter === 'all'
-                ? allSources
-                : allSources.filter((s) => String(s.scope) === scopeFilter);
-
-        // 선택 배출원: URL 파라미터 우선, 없으면 필터된 목록의 1위
-        const activeSourceId = sourceId ?? filteredSources[0]?.source ?? null;
+        // 선택 배출원: 유효한 URL 파라미터 우선, 없으면 전체 랭킹 1위
+        const requestedSource = sourceId && allSources.some((s) => s.source === sourceId)
+            ? sourceId
+            : null;
+        const activeSourceId = requestedSource ?? allSources[0]?.source ?? null;
         const activeSource = allSources.find((s) => s.source === activeSourceId) ?? null;
 
         // Scope별 합계
@@ -49,7 +45,6 @@ export function useSourceMetrics(
 
         return {
             allSources,
-            filteredSources,
             activeSourceId,
             activeSource,
             scopeTotals,
@@ -57,5 +52,5 @@ export function useSourceMetrics(
             monthlyTrend,
             totalEmissions,
         };
-    }, [companies, year, scopeFilter, sourceId]);
+    }, [companies, year, sourceId]);
 }
