@@ -34,7 +34,7 @@ export function DashboardContent() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
     const [yearParam, setYearParam] = useQueryState('year', parseAsInteger);
 
-    const { selectedYear, availableYears, yearlyTotals, monthlyTotals, momChange, totalByCompany, mergedMonthlyData, improvingCount } =
+    const { selectedYear, availableYears, yearlyTotals, monthlyTotals, momChange, totalByCompany, mergedMonthlyData, riskSummary } =
         useDashboardMetrics(companies ?? [], yearParam);
 
     if (isLoading) return <DashboardSkeleton />;
@@ -59,8 +59,7 @@ export function DashboardContent() {
                 monthlyTotals={monthlyTotals}
                 momChange={momChange}
                 totalByCompany={totalByCompany}
-                improvingCount={improvingCount}
-                totalCompanies={companies.length}
+                riskSummary={riskSummary}
             />
 
             <EmissionTrendChart year={selectedYear} data={mergedMonthlyData} companies={companies} />

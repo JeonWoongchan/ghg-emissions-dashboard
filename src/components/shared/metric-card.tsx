@@ -3,6 +3,7 @@
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
     icon?: LucideIcon;
     helperClassName?: string;
     valueClassName?: string;
+    href?: string;
 };
 
 export function MetricCard({
@@ -23,9 +25,10 @@ export function MetricCard({
     icon: Icon,
     helperClassName = 'text-muted-foreground',
     valueClassName = '',
+    href,
 }: Props) {
-    return (
-        <Card>
+    const card = (
+        <Card className={href ? 'cursor-pointer transition-shadow hover:shadow-md' : ''}>
             <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
                     {title}
@@ -41,4 +44,6 @@ export function MetricCard({
             </CardContent>
         </Card>
     );
+
+    return href ? <Link href={href} className="block">{card}</Link> : card;
 }

@@ -4,7 +4,6 @@ import {
     filterByYear,
     getAnnualTotals,
     getAvailableYears,
-    getImprovingCompanyCount,
     getMergedMonthlyData,
     getMonthlyByCompany,
     getMonthlyTotals,
@@ -12,6 +11,7 @@ import {
     getSelectedYear,
     getTotalByCompany,
 } from '@/lib/emissions';
+import { getRiskAssessments, getRiskSummary } from '@/lib/risk';
 import type { Company } from '@/types';
 import { useMemo } from 'react';
 
@@ -29,6 +29,9 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
 
         const monthlyTotals = getMonthlyTotals(filtered);
         const monthlyByCompany = getMonthlyByCompany(filtered);
+        const totalByCompany = getTotalByCompany(filtered);
+        // 리스크 요약은 대시보드 KPI 카드 및 Risk 진입점 표시에 사용
+        const riskSummary = getRiskSummary(getRiskAssessments(companies, selectedYear));
         return {
             selectedYear,
             availableYears,
@@ -36,9 +39,9 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
             yearlyTotals: getAnnualTotals(allEmissions),
             monthlyTotals,
             momChange: getMonthOverMonthChange(monthlyTotals),
-            totalByCompany: getTotalByCompany(filtered),
+            totalByCompany,
             mergedMonthlyData: getMergedMonthlyData(monthlyByCompany, monthlyTotals),
-            improvingCount: getImprovingCompanyCount(filtered),
+            riskSummary,
         };
     }, [companies, year]);
 }
