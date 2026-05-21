@@ -39,13 +39,13 @@ export const MEDIUM_SCOPE_SHARE_PCT = 35;
 
 // 리스크 등급별 시각 색상 — high=빨강, medium=노랑, low=파랑으로 통일
 // 뱃지(RISK_LEVEL_CLASS_NAMES)와 프로그레스 바(RISK_BAR_COLORS)가 같은 색상 사용
-export const RISK_LEVEL_CLASS_NAMES: Record<string, string> = {
+export const RISK_LEVEL_CLASS_NAMES: Record<'high' | 'medium' | 'low', string> = {
     high: 'bg-destructive/10 text-destructive border-destructive/20',
     medium: 'bg-[var(--chart-3)]/10 text-[var(--chart-3)] border-[var(--chart-3)]/20',
     low: 'bg-[var(--chart-2)]/10 text-[var(--chart-2)] border-[var(--chart-2)]/20',
 };
 
-export const RISK_BAR_COLORS: Record<string, string> = {
+export const RISK_BAR_COLORS: Record<'high' | 'medium' | 'low', string> = {
     high: 'var(--destructive)',
     medium: 'var(--chart-3)',
     low: 'var(--chart-2)',

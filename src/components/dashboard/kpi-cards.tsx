@@ -4,19 +4,8 @@ import { MetricCard } from '@/components/shared/metric-card';
 import { ROUTES } from '@/constants/navigation';
 import type { CompanyTotal, MonthlyTotal } from '@/lib/emissions';
 import type { RiskSummary } from '@/lib/risk';
-import { formatEmissions, formatKrw, formatYearMonth } from '@/lib/format';
-import { Activity, Banknote, Building2, TrendingDown, TrendingUp } from 'lucide-react';
-
-// 전월 대비 변화율 부호 및 색상 클래스 반환
-function getTrendProps(change: number | null) {
-    if (change === null) return { label: '-', className: 'text-muted-foreground', Icon: Activity };
-    const isDecrease = change < 0;
-    return {
-        label: `${isDecrease ? '' : '+'}${change.toFixed(1)}%`,
-        className: isDecrease ? 'text-success' : 'text-destructive',
-        Icon: isDecrease ? TrendingDown : TrendingUp,
-    };
-}
+import { formatEmissions, formatKrw, formatYearMonth, getTrendProps } from '@/lib/format';
+import { Banknote, Building2 } from 'lucide-react';
 
 // 연간 총 배출량 카드
 function AnnualEmissionsCard({ total, year }: { total: number; year: number }) {

@@ -10,6 +10,7 @@ import {
     RISK_SCORE_WEIGHTS,
     SCOPE1_SCORE_MULTIPLIER,
     SCOPE2_SCORE_MULTIPLIER,
+    SCOPE3_SCORE_MULTIPLIER,
     TREND_SCORE_CAP_PCT,
 } from '@/constants/risk';
 import { SCOPE_DESCRIPTIONS } from '@/constants/ghg-scope';
@@ -174,7 +175,7 @@ function getScopeScore(scopeBreakdown: Array<{ scope: 1 | 2 | 3; pct: number }>)
     const scope2Pct = scopeBreakdown.find((item) => item.scope === 2)?.pct ?? 0;
     const scope1Pct = scopeBreakdown.find((item) => item.scope === 1)?.pct ?? 0;
 
-    if (scope3Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope;
+    if (scope3Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * SCOPE3_SCORE_MULTIPLIER;
     if (scope2Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * SCOPE2_SCORE_MULTIPLIER;
     if (scope1Pct >= HIGH_SCOPE_SHARE_PCT) return RISK_SCORE_WEIGHTS.scope * SCOPE1_SCORE_MULTIPLIER;
 

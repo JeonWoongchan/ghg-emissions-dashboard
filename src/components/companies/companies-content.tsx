@@ -52,6 +52,7 @@ export function CompaniesContent() {
         selectedYear,
         availableYears,
         setSelectedYear,
+        riskMap,
     } = useCompaniesFilter();
 
     const [countryOpen, setCountryOpen] = useState(false);
@@ -117,7 +118,12 @@ export function CompaniesContent() {
             ) : (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {displayedCompanies.map((company) => (
-                        <CompanyCard key={company.id} company={company} year={selectedYear} />
+                        <CompanyCard
+                            key={company.id}
+                            company={company}
+                            year={selectedYear}
+                            riskAssessment={riskMap.get(company.id)}
+                        />
                     ))}
                 </div>
             )}

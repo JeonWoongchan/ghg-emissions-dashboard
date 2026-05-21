@@ -11,7 +11,7 @@ type Props = {
     tooltip: string;
     value: ReactNode;
     helper: ReactNode;
-    icon?: LucideIcon;
+    icon?: LucideIcon | null;
     helperClassName?: string;
     valueClassName?: string;
     href?: string;

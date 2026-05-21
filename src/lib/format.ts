@@ -1,5 +1,8 @@
 // 공통 포맷 유틸리티
 
+import type { LucideIcon } from 'lucide-react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
+
 // "2024-01" → "2024년 1월"
 export function formatYearMonth(ym: string): string {
     const [year, month] = ym.split('-');
@@ -39,3 +42,16 @@ export const formatTooltipValue = (value: unknown, name: unknown) =>
   typeof value === 'number'
     ? [`${formatEmissions(value)} tCO₂e`, String(name)]
     : ['-', String(name)];
+
+export type TrendProps = { label: string; className: string; Icon: LucideIcon | null };
+
+// 전월 대비 변화율을 UI 표시용 레이블·색상·아이콘으로 변환
+export function getTrendProps(change: number | null): TrendProps {
+    if (change === null) return { label: '-', className: 'text-muted-foreground', Icon: null };
+    const isDecrease = change < 0;
+    return {
+        label: `${isDecrease ? '' : '+'}${change.toFixed(1)}%`,
+        className: isDecrease ? 'text-success' : 'text-destructive',
+        Icon: isDecrease ? TrendingDown : TrendingUp,
+    };
+}

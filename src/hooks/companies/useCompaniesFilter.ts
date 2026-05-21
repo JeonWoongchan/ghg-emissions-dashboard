@@ -3,6 +3,8 @@
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useCountries } from '@/hooks/countries/useCountries';
 import { filterByYear, getAvailableYears, getSelectedYear } from '@/lib/emissions';
+import { getRiskAssessments } from '@/lib/risk';
+import type { RiskAssessment } from '@/lib/risk';
 import type { CompanyWithTotal } from '@/types';
 import { parseAsArrayOf, parseAsInteger, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
@@ -100,6 +102,13 @@ export function useCompaniesFilter() {
         return [...filtered].sort((a, b) => b.total - a.total);
     }, [companies, selectedCountries, sortOrder, selectedYear]);
 
+    // 전체 회사 기준 상대 점수 산정 후 id → assessment Map으로 O(1) 조회
+    const riskMap = useMemo((): Map<string, RiskAssessment> => {
+        if (!companies) return new Map();
+        const assessments = getRiskAssessments(companies, selectedYear);
+        return new Map(assessments.map((a) => [a.id, a]));
+    }, [companies, selectedYear]);
+
     return {
         isLoading,
         error,
@@ -114,5 +123,6 @@ export function useCompaniesFilter() {
         selectedYear,
         availableYears,
         setSelectedYear: useCallback((y: number) => { void setYearParam(y); }, [setYearParam]),
+        riskMap,
     };
 }

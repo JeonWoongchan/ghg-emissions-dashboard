@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RISK_BAR_COLORS } from '@/constants/risk';
 import { ROUTES } from '@/constants/navigation';
 import type { RiskAssessment } from '@/lib/risk';
-import { formatKrw } from '@/lib/format';
-import { ArrowRight, TrendingDown, TrendingUp } from 'lucide-react';
+import { formatKrw, getTrendProps } from '@/lib/format';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 type Props = { assessment: RiskAssessment };
@@ -16,11 +16,7 @@ type Props = { assessment: RiskAssessment };
 // 리스크 분석 요약 카드 렌더링
 export function CompanyRiskCard({ assessment }: Props) {
     const { level, score, estimatedTaxKrw, recentTrendPct, reasons } = assessment;
-
-    const trendUp = recentTrendPct !== null && recentTrendPct > 0;
-    const trendDown = recentTrendPct !== null && recentTrendPct < 0;
-    const TrendIcon = trendUp ? TrendingUp : trendDown ? TrendingDown : null;
-    const trendClass = trendUp ? 'text-destructive' : trendDown ? 'text-success' : 'text-muted-foreground';
+    const trend = getTrendProps(recentTrendPct);
 
     return (
         <Card>
@@ -65,11 +61,9 @@ export function CompanyRiskCard({ assessment }: Props) {
                         </div>
                         <div>
                             <p className="text-xs text-muted-foreground">최근 배출 추세</p>
-                            <p className={`flex items-center gap-1 text-xl font-semibold ${trendClass}`}>
-                                {TrendIcon && <TrendIcon className="size-4" />}
-                                {recentTrendPct !== null
-                                    ? `${recentTrendPct > 0 ? '+' : ''}${recentTrendPct.toFixed(1)}%`
-                                    : '-'}
+                            <p className={`flex items-center gap-1 text-xl font-semibold ${trend.className}`}>
+                                {trend.Icon && <trend.Icon className="size-4" />}
+                                {trend.label}
                             </p>
                             <p className="text-xs text-muted-foreground">최근 3개월 평균 대비</p>
                         </div>

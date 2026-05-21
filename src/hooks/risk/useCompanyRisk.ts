@@ -10,7 +10,8 @@ export function useCompanyRisk(companyId: string, year: number): RiskAssessment 
 
     return useMemo(() => {
         if (!companies) return null;
-        // 상대 배출량 점수 산정을 위해 전체 목록 기준으로 평가 후 해당 회사만 추출
-        return getRiskAssessments(companies, year).find((a) => a.id === companyId) ?? null;
+        // 상대 배출량 점수 산정을 위해 전체 목록 기준으로 평가
+        const map = new Map(getRiskAssessments(companies, year).map((a) => [a.id, a]));
+        return map.get(companyId) ?? null;
     }, [companies, companyId, year]);
 }
