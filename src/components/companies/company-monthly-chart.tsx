@@ -5,7 +5,7 @@
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SCOPE_COLORS, SCOPE_LABELS } from '@/constants/ghg-scope';
-import { formatEmissions, formatMonthShort, formatYearMonth } from '@/lib/format';
+import { formatMonthShort, formatTooltipValue, formatYearMonth } from '@/lib/format';
 import {
     Area,
     AreaChart,
@@ -51,12 +51,7 @@ export function CompanyMonthlyChart({ data, year }: Props) {
                             labelFormatter={(label) =>
                                 typeof label === 'string' ? formatYearMonth(label) : ''
                             }
-                            formatter={(value, name) => [
-                                typeof value === 'number'
-                                    ? `${formatEmissions(value)} tCO₂e`
-                                    : '-',
-                                name,
-                            ]}
+                            formatter={formatTooltipValue}
                             contentStyle={{
                                 backgroundColor: 'var(--card)',
                                 border: '1px solid var(--border)',
