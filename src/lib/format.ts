@@ -16,6 +16,20 @@ export function formatEmissions(value: number): string {
     return value.toLocaleString('ko-KR');
 }
 
+// 원화 금액을 대시보드 표시용으로 축약
+export function formatKrw(value: number): string {
+    const abs = Math.abs(value);
+    if (abs >= 100000000) {
+        return `${(value / 100000000).toLocaleString('ko-KR', {
+            maximumFractionDigits: 1,
+        })}억 원`;
+    }
+    if (abs >= 10000) {
+        return `${Math.round(value / 10000).toLocaleString('ko-KR')}만 원`;
+    }
+    return `${value.toLocaleString('ko-KR')}원`;
+}
+
 // 회사명 말줄임 — 차트 축 레이블처럼 공간이 제한된 곳에 사용
 export function formatCompanyName(name: string, maxLength = 14): string {
     return name.length > maxLength ? `${name.slice(0, maxLength)}…` : name;

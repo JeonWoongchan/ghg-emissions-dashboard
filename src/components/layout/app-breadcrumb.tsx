@@ -20,7 +20,11 @@ export function AppBreadcrumb() {
     }
 
     if (pathname === ROUTES.companies) {
-        return <span className="text-sm font-medium text-foreground">회사 목록</span>;
+        return <span className="text-sm font-medium text-foreground">관리 대상 회사</span>;
+    }
+
+    if (pathname === ROUTES.risk) {
+        return <span className="text-sm font-medium text-foreground">리스크 관리</span>;
     }
 
     if (isCompanyDetail) {
@@ -30,7 +34,7 @@ export function AppBreadcrumb() {
                     href={ROUTES.companies}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                    회사 목록
+                    관리 대상 회사
                 </Link>
                 <span className="text-muted-foreground">/</span>
                 <span className="font-medium text-foreground">

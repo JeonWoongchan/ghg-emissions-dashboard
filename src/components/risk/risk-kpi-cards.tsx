@@ -1,0 +1,54 @@
+// 리스크 페이지 상단 KPI 카드 렌더링
+
+import { MetricCard } from '@/components/shared/metric-card';
+import { CARBON_TAX_RATE_KRW_PER_TCO2E } from '@/constants/risk';
+import { formatEmissions, formatKrw } from '@/lib/format';
+import type { RiskSummary } from '@/lib/risk';
+import { AlertTriangle, Calculator, Gauge, TrendingUp } from 'lucide-react';
+
+type Props = {
+    summary: RiskSummary;
+    year: number;
+    totalCompanies: number;
+};
+
+// 리스크 KPI 카드 목록 조합
+export function RiskKpiCards({ summary, year, totalCompanies }: Props) {
+    return (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <MetricCard
+                title="예상 탄소세 노출액"
+                tooltip={`선택 연도 총 배출량에 가정 세율 ${formatEmissions(CARBON_TAX_RATE_KRW_PER_TCO2E)}원/tCO₂e를 곱한 시나리오 금액입니다. 실제 세무 산정이 아닙니다.`}
+                value={formatKrw(summary.totalTaxKrw)}
+                helper={`${year}년 관리 대상 전체`}
+                icon={Calculator}
+            />
+            <MetricCard
+                title="High Risk 회사"
+                tooltip="리스크 점수가 70점 이상인 관리 대상 회사 수입니다. 배출량, 최근 증가 추세, Scope 구성을 종합합니다."
+                value={
+                    <>
+                        <span className="text-destructive">{summary.highRiskCount}</span>
+                        <span className="text-muted-foreground"> / {totalCompanies}</span>
+                    </>
+                }
+                helper="우선 검토 대상"
+                icon={AlertTriangle}
+            />
+            <MetricCard
+                title="평균 리스크 점수"
+                tooltip="관리 대상 회사의 리스크 점수 평균입니다. 100점에 가까울수록 탄소세·규제 대응 우선순위가 높습니다."
+                value={summary.averageScore}
+                helper="100점 만점"
+                icon={Gauge}
+            />
+            <MetricCard
+                title="증가 추세 회사"
+                tooltip="최근 3개월 평균 배출량이 직전 3개월 평균보다 증가한 회사 수입니다."
+                value={summary.increasingCompaniesCount}
+                helper="최근 추세 기준"
+                icon={TrendingUp}
+            />
+        </div>
+    );
+}

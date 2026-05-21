@@ -1,0 +1,44 @@
+// KPI/요약 지표 카드 공통 렌더링
+
+import { InfoTooltip } from '@/components/shared/info-tooltip';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+
+type Props = {
+    title: string;
+    tooltip: string;
+    value: ReactNode;
+    helper: ReactNode;
+    icon?: LucideIcon;
+    helperClassName?: string;
+    valueClassName?: string;
+};
+
+export function MetricCard({
+    title,
+    tooltip,
+    value,
+    helper,
+    icon: Icon,
+    helperClassName = 'text-muted-foreground',
+    valueClassName = '',
+}: Props) {
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
+                    {title}
+                    <InfoTooltip content={tooltip} />
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className={`text-2xl font-bold ${valueClassName}`}>{value}</p>
+                <p className={`mt-1 flex items-center gap-1 text-xs ${helperClassName}`}>
+                    {Icon && <Icon className="size-3" />}
+                    {helper}
+                </p>
+            </CardContent>
+        </Card>
+    );
+}

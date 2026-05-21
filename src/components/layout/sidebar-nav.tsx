@@ -15,7 +15,7 @@ import { COUNTRY_FLAGS } from '@/constants/countries';
 import { ROUTES } from '@/constants/navigation';
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { Building2, ChevronDown, LayoutDashboard, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Collapsible } from 'radix-ui';
@@ -78,6 +78,13 @@ export function SidebarNav() {
                         isActive={pathname === ROUTES.dashboard}
                     />
 
+                    <NavItem
+                        title="리스크 관리"
+                        href={ROUTES.risk}
+                        icon={ShieldAlert}
+                        isActive={pathname === ROUTES.risk}
+                    />
+
                     {/* 회사 목록 — 접을 수 있는 서브메뉴, 버튼 클릭 시 목록 페이지로 이동 */}
                     <Collapsible.Root defaultOpen={isCompaniesActive} className="group/collapsible">
                         <SidebarMenuItem>
@@ -85,12 +92,12 @@ export function SidebarNav() {
                                 <SidebarMenuButton
                                     asChild
                                     isActive={isCompaniesActive}
-                                    tooltip="회사 목록"
+                                    tooltip="관리 대상 회사"
                                     className={`${ACTIVE_CLASS} ${COLLAPSIBLE_ACTIVE_FIX}`}
                                 >
                                     <Link href={ROUTES.companies}>
                                         <Building2 />
-                                        <span>회사 목록</span>
+                                        <span>관리 대상 회사</span>
                                         <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                                     </Link>
                                 </SidebarMenuButton>
