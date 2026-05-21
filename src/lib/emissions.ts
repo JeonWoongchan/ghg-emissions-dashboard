@@ -165,7 +165,9 @@ export function getSelectedYear(
     yearParam: number | null | undefined,
     availableYears: number[]
 ): number {
-    return yearParam ?? availableYears[0] ?? new Date().getFullYear();
+    // URL 연도가 사용 가능한 연도인지 검증
+    if (yearParam && availableYears.includes(yearParam)) return yearParam;
+    return availableYears[0] ?? new Date().getFullYear();
 }
 
 // 특정 연도의 배출량만 필터링

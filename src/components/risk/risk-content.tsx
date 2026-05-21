@@ -41,7 +41,7 @@ export function RiskContent() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">리스크 관리</h2>
                     <p className="text-muted-foreground">

@@ -26,16 +26,19 @@ export function RiskPriorityTable({ assessments, year }: Props) {
             <CardContent>
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-230 text-sm">
+                        <caption className="sr-only">
+                            {year}년 관리 대상 회사별 탄소세 리스크 우선순위
+                        </caption>
                         <thead>
                             <tr className="border-b text-left text-muted-foreground">
-                                <th className="py-3 pr-4 font-medium">회사</th>
-                                <th className="py-3 pr-4 font-medium">등급</th>
-                                <th className="py-3 pr-4 text-right font-medium">점수</th>
-                                <th className="py-3 pr-4 text-right font-medium">연간 배출량</th>
-                                <th className="py-3 pr-4 text-right font-medium">예상 비용</th>
-                                <th className="py-3 pr-4 text-right font-medium">최근 추세</th>
-                                <th className="py-3 pr-4 font-medium">주요 Scope</th>
-                                <th className="py-3 font-medium">리스크 사유</th>
+                                <th scope="col" className="py-3 pr-4 font-medium">회사</th>
+                                <th scope="col" className="py-3 pr-4 font-medium">등급</th>
+                                <th scope="col" className="py-3 pr-4 text-right font-medium">점수</th>
+                                <th scope="col" className="py-3 pr-4 text-right font-medium">연간 배출량</th>
+                                <th scope="col" className="py-3 pr-4 text-right font-medium">예상 비용</th>
+                                <th scope="col" className="py-3 pr-4 text-right font-medium">최근 추세</th>
+                                <th scope="col" className="py-3 pr-4 font-medium">주요 Scope</th>
+                                <th scope="col" className="py-3 font-medium">리스크 사유</th>
                             </tr>
                         </thead>
                         <tbody>

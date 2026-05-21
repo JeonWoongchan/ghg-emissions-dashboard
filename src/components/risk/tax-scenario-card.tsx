@@ -14,19 +14,21 @@ export function TaxScenarioCard() {
                     시나리오입니다.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4 text-sm text-muted-foreground md:grid-cols-3">
+            <CardContent>
+                <dl className="grid gap-4 text-sm text-muted-foreground md:grid-cols-3">
                 <div>
-                    <p className="font-medium text-foreground">가정 세율</p>
-                    <p>{formatEmissions(CARBON_TAX_RATE_KRW_PER_TCO2E)}원 / tCO₂e</p>
+                    <dt className="font-medium text-foreground">가정 세율</dt>
+                    <dd>{formatEmissions(CARBON_TAX_RATE_KRW_PER_TCO2E)}원 / tCO₂e</dd>
                 </div>
                 <div>
-                    <p className="font-medium text-foreground">점수 산정</p>
-                    <p>연간 배출량, 최근 3개월 증가율, Scope 구성을 종합합니다.</p>
+                    <dt className="font-medium text-foreground">점수 산정</dt>
+                    <dd>연간 배출량, 최근 3개월 증가율, Scope 구성을 종합합니다.</dd>
                 </div>
                 <div>
-                    <p className="font-medium text-foreground">활용 목적</p>
-                    <p>규제 대응과 감축 조치가 필요한 관리 대상을 먼저 찾습니다.</p>
+                    <dt className="font-medium text-foreground">활용 목적</dt>
+                    <dd>규제 대응과 감축 조치가 필요한 관리 대상을 먼저 찾습니다.</dd>
                 </div>
+                </dl>
             </CardContent>
         </Card>
     );

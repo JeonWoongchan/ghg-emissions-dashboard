@@ -34,7 +34,7 @@ export function RiskPriorityRow({ assessment }: Props) {
 
     return (
         <tr className="border-b last:border-0">
-            <td className="py-4 pr-4">
+            <th scope="row" className="py-4 pr-4 text-left">
                 <Link
                     href={ROUTES.companyDetail(assessment.id)}
                     className="group inline-flex max-w-52 items-center gap-2 font-medium text-foreground hover:underline"
@@ -43,7 +43,7 @@ export function RiskPriorityRow({ assessment }: Props) {
                     <span className="truncate">{assessment.name}</span>
                     <ArrowRight className="size-3 opacity-0 transition-opacity group-hover:opacity-100" />
                 </Link>
-            </td>
+            </th>
             <td className="py-4 pr-4">
                 <RiskLevelBadge level={assessment.level} />
             </td>
