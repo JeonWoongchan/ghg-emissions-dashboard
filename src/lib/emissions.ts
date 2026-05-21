@@ -105,6 +105,42 @@ function getUniqueMonths(companies: Company[]): string[] {
     return Array.from(months).sort();
 }
 
+// 회사 월별 Scope 1/2/3 배출량 (스택 에어리어 차트용 wide format)
+export function getMonthlyByScope(
+    emissions: GhgEmission[]
+): Record<string, number | string>[] {
+    const months = [...new Set(emissions.map((e) => e.yearMonth))].sort();
+    return months.map((month) => {
+        const row: Record<string, number | string> = { month };
+        const monthEmissions = emissions.filter((e) => e.yearMonth === month);
+        for (const scope of [1, 2, 3] as const) {
+            row[`Scope ${scope}`] = Math.round(
+                monthEmissions
+                    .filter((e) => (SCOPE_MAP[e.source] ?? 3) === scope)
+                    .reduce((sum, e) => sum + e.emissions, 0)
+            );
+        }
+        return row;
+    });
+}
+
+// 배출원별 연간 총 배출량 (Scope 정보 포함, 내림차순 정렬)
+export function getTotalBySource(
+    emissions: GhgEmission[]
+): Array<{ source: string; total: number; scope: 1 | 2 | 3 }> {
+    const map = new Map<string, number>();
+    for (const e of emissions) {
+        map.set(e.source, (map.get(e.source) ?? 0) + e.emissions);
+    }
+    return Array.from(map.entries())
+        .map(([source, total]) => ({
+            source,
+            total: Math.round(total),
+            scope: (SCOPE_MAP[source] ?? 3) as 1 | 2 | 3,
+        }))
+        .sort((a, b) => b.total - a.total);
+}
+
 // 배출량 데이터로 GHG Scope 1/2/3 비중 계산
 export function getScopeBreakdown(emissions: GhgEmission[]): ScopeBreakdownItem[] {
     const totals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };

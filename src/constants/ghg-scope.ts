@@ -32,3 +32,17 @@ export const SCOPE_COLORS: Record<1 | 2 | 3, string> = {
   2: 'var(--chart-2)',  // blue  — 전기·열
   3: 'var(--chart-5)',  // purple — 공급망·운송
 };
+
+// 배출원 코드 한글 레이블
+export const SOURCE_LABELS: Record<string, string> = {
+  gasoline: '휘발유',
+  diesel: '경유',
+  lpg: 'LPG',
+  naturalGas: '천연가스',
+  electricity: '전기',
+  heat: '열',
+  steam: '증기',
+  shipping: '해운',
+  businessTravel: '출장',
+  waste: '폐기물',
+};
