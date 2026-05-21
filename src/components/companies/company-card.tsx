@@ -10,7 +10,7 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 // 회사 배출 현황 카드 렌더링
-export function CompanyCard({ company }: { company: CompanyWithTotal }) {
+export function CompanyCard({ company, year }: { company: CompanyWithTotal; year: number }) {
     const scopes = getScopeBreakdown(company.emissions);
 
     return (
@@ -28,7 +28,7 @@ export function CompanyCard({ company }: { company: CompanyWithTotal }) {
                 {/* 연간 총 배출량 */}
                 <div>
                     <p className="text-2xl font-bold">{formatEmissions(company.total)}</p>
-                    <p className="text-xs text-muted-foreground">tCO₂e · 2024년 연간</p>
+                    <p className="text-xs text-muted-foreground">tCO₂e · {year}년 연간</p>
                 </div>
 
                 {/* GHG Scope 비중 스택 바 */}

@@ -17,7 +17,7 @@ function getTrendProps(change: number | null) {
 }
 
 // 연간 총 배출량 카드
-function AnnualEmissionsCard({ total }: { total: number }) {
+function AnnualEmissionsCard({ total, year }: { total: number; year: number }) {
     return (
         <Card>
             <CardHeader className="pb-2">
@@ -27,7 +27,7 @@ function AnnualEmissionsCard({ total }: { total: number }) {
             </CardHeader>
             <CardContent>
                 <p className="text-2xl font-bold">{formatEmissions(total)}</p>
-                <p className="mt-1 text-xs text-muted-foreground">tCO₂e · 2024년 전체</p>
+                <p className="mt-1 text-xs text-muted-foreground">tCO₂e · {year}년 전체</p>
             </CardContent>
         </Card>
     );
@@ -91,9 +91,11 @@ function TopEmitterCard({ company }: { company: CompanyTotal | undefined }) {
 function ImprovingCompaniesCard({
     count,
     total,
+    year,
 }: {
     count: number;
     total: number;
+    year: number;
 }) {
     return (
         <Card>
@@ -107,13 +109,14 @@ function ImprovingCompaniesCard({
                     <span className="text-success">{count}</span>
                     <span className="text-muted-foreground"> / {total}</span>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">1월 대비 12월 배출량 감소</p>
+                <p className="mt-1 text-xs text-muted-foreground">{year}년 1월 대비 12월 배출량 감소</p>
             </CardContent>
         </Card>
     );
 }
 
 type Props = {
+    year: number;
     monthlyTotals: MonthlyTotal[];
     momChange: number | null;
     totalByCompany: CompanyTotal[];
@@ -122,16 +125,16 @@ type Props = {
 };
 
 // KPI 카드 4종 조합 렌더링
-export function KpiCards({ monthlyTotals, momChange, totalByCompany, improvingCount, totalCompanies }: Props) {
+export function KpiCards({ year, monthlyTotals, momChange, totalByCompany, improvingCount, totalCompanies }: Props) {
     const annualTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0);
     const latestMonth = monthlyTotals[monthlyTotals.length - 1];
 
     return (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <AnnualEmissionsCard total={annualTotal} />
+            <AnnualEmissionsCard total={annualTotal} year={year} />
             <MonthlyEmissionsCard latest={latestMonth} momChange={momChange} />
             <TopEmitterCard company={totalByCompany[0]} />
-            <ImprovingCompaniesCard count={improvingCount} total={totalCompanies} />
+            <ImprovingCompaniesCard count={improvingCount} total={totalCompanies} year={year} />
         </div>
     );
 }

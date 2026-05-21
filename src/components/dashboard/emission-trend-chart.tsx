@@ -32,6 +32,7 @@ const companyIdsParser = parseAsArrayOf(parseAsString).withDefault([]);
 type Props = {
     data: Record<string, number | string>[];
     companies: Company[];
+    year: number;
 };
 
 const tooltipStyle = {
@@ -232,12 +233,12 @@ function ComparisonTab({ data, companies }: { data: Props['data']; companies: Co
 }
 
 // 탭 전환 가능한 월간 배출량 추이 차트 렌더링
-export function EmissionTrendChart({ data, companies }: Props) {
+export function EmissionTrendChart({ data, companies, year }: Props) {
     return (
         <Card>
             <CardHeader>
                 <CardTitle>월간 배출량 추이</CardTitle>
-                <CardDescription>2024년 월간 온실가스 배출량 (tCO₂e)</CardDescription>
+                <CardDescription>{year}년 월간 온실가스 배출량 (tCO₂e)</CardDescription>
             </CardHeader>
             <CardContent>
                 <Tabs defaultValue="aggregate">

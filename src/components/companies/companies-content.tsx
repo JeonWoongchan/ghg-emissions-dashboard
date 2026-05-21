@@ -47,6 +47,7 @@ export function CompaniesContent() {
         selectedCountries,
         sortOrder,
         setSortOrder,
+        selectedYear,
     } = useCompaniesFilter();
 
     const [countryOpen, setCountryOpen] = useState(false);
@@ -102,7 +103,7 @@ export function CompaniesContent() {
             ) : (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {displayedCompanies.map((company) => (
-                        <CompanyCard key={company.id} company={company} />
+                        <CompanyCard key={company.id} company={company} year={selectedYear} />
                     ))}
                 </div>
             )}

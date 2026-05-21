@@ -18,17 +18,18 @@ import {
 
 type Props = {
     data: Record<string, number | string>[];
+    year: number;
 };
 
 const axisTickStyle = { fontSize: 12, fill: 'var(--muted-foreground)' };
 
 // 월별 Scope 구성 스택 에어리어 차트 렌더링
-export function CompanyMonthlyChart({ data }: Props) {
+export function CompanyMonthlyChart({ data, year }: Props) {
     return (
         <Card>
             <CardHeader>
                 <CardTitle>월별 배출량 추이</CardTitle>
-                <CardDescription>Scope 구성 변화 · 2024년 월별 (tCO₂e)</CardDescription>
+                <CardDescription>Scope 구성 변화 · {year}년 월별 (tCO₂e)</CardDescription>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={280}>

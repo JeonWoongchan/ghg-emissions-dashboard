@@ -2,6 +2,7 @@
 
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useCountries } from '@/hooks/countries/useCountries';
+import { filterByYear, getAvailableYears } from '@/lib/emissions';
 import type { CompanyWithTotal } from '@/types';
 import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
@@ -34,6 +35,13 @@ export function useCompaniesFilter() {
         () => new Map(countries?.map((c) => [c.code, c.name]) ?? []),
         [countries]
     );
+
+    // 데이터에서 사용 가능한 연도 목록 — 최신 연도를 기본값으로 사용
+    const availableYears = useMemo(
+        () => (companies ? getAvailableYears(companies.flatMap((c) => c.emissions)) : []),
+        [companies]
+    );
+    const selectedYear = availableYears[0] ?? new Date().getFullYear();
 
     // 데이터에 존재하는 국가 목록 — 국가명 병합
     const countryOptions = useMemo(() => {
@@ -73,9 +81,12 @@ export function useCompaniesFilter() {
     const displayedCompanies = useMemo((): CompanyWithTotal[] => {
         if (!companies) return [];
 
+        // 선택 연도 배출량만 집계
         const withTotals = companies.map((c) => ({
             ...c,
-            total: Math.round(c.emissions.reduce((sum, e) => sum + e.emissions, 0)),
+            total: Math.round(
+                filterByYear(c.emissions, selectedYear).reduce((sum, e) => sum + e.emissions, 0)
+            ),
         }));
 
         const filtered =
@@ -86,7 +97,7 @@ export function useCompaniesFilter() {
         if (sortOrder === 'asc') return [...filtered].sort((a, b) => a.total - b.total);
         if (sortOrder === 'name') return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
         return [...filtered].sort((a, b) => b.total - a.total);
-    }, [companies, selectedCountries, sortOrder]);
+    }, [companies, selectedCountries, sortOrder, selectedYear]);
 
     return {
         isLoading,
@@ -99,5 +110,7 @@ export function useCompaniesFilter() {
         selectedCountries,
         sortOrder,
         setSortOrder,
+        selectedYear,
+        availableYears,
     };
 }

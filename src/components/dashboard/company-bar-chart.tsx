@@ -16,10 +16,11 @@ const TOP_N = 10;
 
 type Props = {
     data: CompanyTotal[];
+    year: number;
 };
 
 // 연간 배출량 상위 N개 회사 수평 바 차트 렌더링
-export function CompanyBarChart({ data }: Props) {
+export function CompanyBarChart({ data, year }: Props) {
     const topData = data.slice(0, TOP_N).map((entry, i) => ({
         ...entry,
         fill: CHART_COLORS[i % CHART_COLORS.length],
@@ -29,7 +30,7 @@ export function CompanyBarChart({ data }: Props) {
         <Card>
             <CardHeader>
                 <CardTitle>연간 배출량 상위 {TOP_N}개 회사</CardTitle>
-                <CardDescription>2024년 누적 온실가스 배출량 기준 (tCO₂e)</CardDescription>
+                <CardDescription>{year}년 누적 온실가스 배출량 기준 (tCO₂e)</CardDescription>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={220}>

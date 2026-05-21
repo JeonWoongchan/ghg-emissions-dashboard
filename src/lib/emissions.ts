@@ -141,6 +141,18 @@ export function getTotalBySource(
         .sort((a, b) => b.total - a.total);
 }
 
+// 배출량 데이터에 포함된 연도 목록 추출 (내림차순)
+export function getAvailableYears(emissions: GhgEmission[]): number[] {
+    const years = new Set(emissions.map((e) => parseInt(e.yearMonth.slice(0, 4), 10)));
+    return Array.from(years).sort((a, b) => b - a);
+}
+
+// 특정 연도의 배출량만 필터링
+export function filterByYear(emissions: GhgEmission[], year: number): GhgEmission[] {
+    const prefix = `${year}-`;
+    return emissions.filter((e) => e.yearMonth.startsWith(prefix));
+}
+
 // 배출량 데이터로 GHG Scope 1/2/3 비중 계산
 export function getScopeBreakdown(emissions: GhgEmission[]): ScopeBreakdownItem[] {
     const totals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };

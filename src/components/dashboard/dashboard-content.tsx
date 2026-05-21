@@ -28,21 +28,21 @@ function DashboardSkeleton() {
 // 대시보드 전체 컨텐츠 렌더링
 export function DashboardContent() {
     const { data: companies, isLoading, error, refetch } = useCompanies();
-    const { monthlyTotals, momChange, totalByCompany, mergedMonthlyData, improvingCount } =
+    const { selectedYear, monthlyTotals, momChange, totalByCompany, mergedMonthlyData, improvingCount } =
         useDashboardMetrics(companies ?? []);
 
     if (isLoading) return <DashboardSkeleton />;
     if (error || !companies?.length) return <ErrorState onRetry={refetch} />;
 
-
     return (
         <div className="space-y-6">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">대시보드</h2>
-                <p className="text-muted-foreground">2024년 온실가스 배출 현황 요약</p>
+                <p className="text-muted-foreground">{selectedYear}년 온실가스 배출 현황 요약</p>
             </div>
 
             <KpiCards
+                year={selectedYear}
                 monthlyTotals={monthlyTotals}
                 momChange={momChange}
                 totalByCompany={totalByCompany}
@@ -50,9 +50,9 @@ export function DashboardContent() {
                 totalCompanies={companies.length}
             />
 
-            <EmissionTrendChart data={mergedMonthlyData} companies={companies} />
+            <EmissionTrendChart year={selectedYear} data={mergedMonthlyData} companies={companies} />
 
-            <CompanyBarChart data={totalByCompany} />
+            <CompanyBarChart year={selectedYear} data={totalByCompany} />
         </div>
     );
 }

@@ -11,10 +11,11 @@ type SourceItem = { source: string; total: number; scope: 1 | 2 | 3 };
 
 type Props = {
     sources: SourceItem[];
+    year: number;
 };
 
 // 배출원별 연간 총 배출량 수평 바 차트 렌더링
-export function CompanySourceChart({ sources }: Props) {
+export function CompanySourceChart({ sources, year }: Props) {
     const data = sources.map((s) => ({
         ...s,
         label: SOURCE_LABELS[s.source] ?? s.source,
@@ -28,7 +29,7 @@ export function CompanySourceChart({ sources }: Props) {
             <CardHeader>
                 <CardTitle>배출원별 배출량</CardTitle>
                 <CardDescription>
-                    배출원 및 Scope 구분 · 2024년 연간 (tCO₂e)
+                    배출원 및 Scope 구분 · {year}년 연간 (tCO₂e)
                 </CardDescription>
             </CardHeader>
             <CardContent>
