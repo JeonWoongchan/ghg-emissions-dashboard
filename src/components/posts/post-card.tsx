@@ -43,6 +43,7 @@ export function PostCard({ post, onEditAction }: Props) {
                         className="size-7"
                         onClick={() => onEditAction(post)}
                         disabled={isPending}
+                        aria-label="포스트 수정"
                     >
                         <Pencil className="size-3.5" />
                     </Button>
@@ -52,6 +53,7 @@ export function PostCard({ post, onEditAction }: Props) {
                         className="size-7 text-destructive hover:text-destructive"
                         onClick={handleDelete}
                         disabled={isPending}
+                        aria-label="포스트 삭제"
                     >
                         <Trash2 className="size-3.5" />
                     </Button>

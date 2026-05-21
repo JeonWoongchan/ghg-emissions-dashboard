@@ -30,10 +30,17 @@ function CompanyDetailSkeleton() {
     return (
         <div className="space-y-6">
             <Skeleton className="h-16 w-64 rounded-xl" />
-            <Skeleton className="h-[320px] rounded-xl" />
+            <Skeleton className="h-[280px] rounded-xl" />
+            <Skeleton className="h-[200px] rounded-xl" />
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Skeleton className="h-[260px] rounded-xl" />
                 <Skeleton className="h-[260px] rounded-xl" />
+            </div>
+            <div className="space-y-3">
+                <Skeleton className="h-8 w-32 rounded-md" />
+                {[1, 2].map((i) => (
+                    <Skeleton key={i} className="h-24 rounded-lg" />
+                ))}
             </div>
         </div>
     );

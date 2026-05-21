@@ -24,6 +24,7 @@ function DashboardSkeleton() {
             </div>
             <Skeleton className="h-92 rounded-xl" />
             <Skeleton className="h-79 rounded-xl" />
+            <Skeleton className="h-52 rounded-xl" />
         </div>
     );
 }
