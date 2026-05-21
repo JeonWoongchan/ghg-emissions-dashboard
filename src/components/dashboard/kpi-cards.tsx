@@ -81,7 +81,7 @@ function ImprovingCompaniesCard({
     return (
         <MetricCard
             title="감소 추세 회사"
-            tooltip="선택 연도 1월 대비 12월 배출량이 감소한 관리 대상 회사 수입니다. 탄소 감축 노력의 성과를 한눈에 파악할 수 있습니다."
+            tooltip="최근 3개월 평균 배출량이 직전 3개월 평균보다 감소한 회사 수입니다. 리스크 페이지의 최근 추세와 동일한 기준으로, 지금 이 순간의 배출 모멘텀을 나타냅니다."
             value={
                 <>
                     <span className="text-success">{count}</span>

@@ -4,7 +4,6 @@ import {
     filterByYear,
     getAnnualTotals,
     getAvailableYears,
-    getImprovingCompanyCount,
     getMergedMonthlyData,
     getMonthlyByCompany,
     getMonthlyTotals,
@@ -32,8 +31,13 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
         const monthlyByCompany = getMonthlyByCompany(filtered);
         const totalByCompany = getTotalByCompany(filtered);
         const yearlyTotals = getAnnualTotals(allEmissions);
-        // 리스크 요약은 대시보드 KPI 카드 및 Risk 진입점 표시에 사용
-        const riskSummary = getRiskSummary(getRiskAssessments(companies, selectedYear));
+        // 리스크 평가 — 요약 KPI와 감소 추세 회사 수 동시 산출
+        const assessments = getRiskAssessments(companies, selectedYear);
+        const riskSummary = getRiskSummary(assessments);
+        // 감소 추세: 리스크와 동일한 최근 3개월 vs 직전 3개월 기준
+        const improvingCount = assessments.filter(
+            (a) => a.recentTrendPct !== null && a.recentTrendPct < 0
+        ).length;
 
         // 작년 같은 기간 대비 변화율 — 현재 연도의 최신 월까지만 비교
         const currentPeriodTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0);
@@ -78,7 +82,7 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
             totalByCompany,
             mergedMonthlyData: getMergedMonthlyData(monthlyByCompany, monthlyTotals),
             riskSummary,
-            improvingCount: getImprovingCompanyCount(filtered),
+            improvingCount,
             yoyChange,
             momYoyChange,
         };
