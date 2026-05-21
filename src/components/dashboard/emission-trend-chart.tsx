@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MultiSelectPopover } from '@/components/shared/multi-select-popover';
-import { CHART_COLORS } from '@/constants/chart';
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { TOTAL_EMISSIONS_KEY } from '@/lib/emissions';
 import {formatMonthShort, formatTooltipValue, formatYearMonth} from '@/lib/format';
 import type { Company } from '@/types';
@@ -36,15 +36,6 @@ type Props = {
     year: number;
 };
 
-const tooltipStyle = {
-    backgroundColor: 'var(--card)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-    fontSize: 12,
-};
-
-const axisTickStyle = { fontSize: 12, fill: 'var(--muted-foreground)' };
-
 // 공통 차트 축/그리드 설정
 function ChartAxes() {
     return (
@@ -53,15 +44,15 @@ function ChartAxes() {
             <XAxis
                 dataKey="month"
                 tickFormatter={formatMonthShort}
-                tick={axisTickStyle}
+                tick={CHART_AXIS_STYLE}
                 axisLine={false}
                 tickLine={false}
             />
-            <YAxis tick={axisTickStyle} axisLine={false} tickLine={false} width={44} />
+            <YAxis tick={CHART_AXIS_STYLE} axisLine={false} tickLine={false} width={44} />
             <Tooltip
                 labelFormatter={(label) => (typeof label === 'string' ? formatYearMonth(label) : '')}
                 formatter={formatTooltipValue}
-                contentStyle={tooltipStyle}
+                contentStyle={CHART_TOOLTIP_STYLE}
             />
             <Legend
                 wrapperStyle={{ fontSize: 12, paddingTop: 16 }}

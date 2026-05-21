@@ -3,10 +3,10 @@
 // 연간 배출량 상위 N개 회사 비교 바 차트 렌더링
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CHART_COLORS } from '@/constants/chart';
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { ROUTES } from '@/constants/navigation';
 import type { CompanyTotal } from '@/lib/emissions';
-import { formatCompanyName, formatEmissions } from '@/lib/format';
+import { formatCompanyName, formatEmissions, formatKilo } from '@/lib/format';
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -50,16 +50,16 @@ export function CompanyBarChart({ data, year }: Props) {
                     >
                         <XAxis
                             type="number"
-                            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
-                            tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`}
+                            tickFormatter={formatKilo}
                         />
                         <YAxis
                             type="category"
                             dataKey="name"
                             width={YAXIS_WIDTH}
-                            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                             tickFormatter={(name) => formatCompanyName(name, YAXIS_MAX_LEN)}
@@ -78,12 +78,7 @@ export function CompanyBarChart({ data, year }: Props) {
                                     <span key="n" style={{ color }}>연간 총 배출량</span>,
                                 ];
                             }}
-                            contentStyle={{
-                                backgroundColor: 'var(--card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)',
-                                fontSize: 12,
-                            }}
+                            contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         {/* Bar onClick으로 직접 처리 — BarChart onClick보다 신뢰성 높음 */}
                         <Bar

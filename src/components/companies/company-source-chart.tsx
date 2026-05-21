@@ -4,8 +4,9 @@
 
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SCOPE_LABELS, SOURCE_LABELS } from '@/constants/ghg-scope';
-import { formatEmissions, formatCompanyName } from '@/lib/format';
+import { formatEmissions, formatCompanyName, formatKilo } from '@/lib/format';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 type SourceItem = { source: string; total: number; scope: 1 | 2 | 3 };
@@ -57,16 +58,16 @@ export function CompanySourceChart({ sources, year }: Props) {
                     >
                         <XAxis
                             type="number"
-                            tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
-                            tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`}
+                            tickFormatter={formatKilo}
                         />
                         <YAxis
                             type="category"
                             dataKey="label"
                             width={70}
-                            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                             tickFormatter={(v) => formatCompanyName(v, 7)}
@@ -84,12 +85,7 @@ export function CompanySourceChart({ sources, year }: Props) {
                                     ? `${label} (${SCOPE_LABELS[item.scope]})`
                                     : label;
                             }}
-                            contentStyle={{
-                                backgroundColor: 'var(--card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)',
-                                fontSize: 12,
-                            }}
+                            contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         <Bar dataKey="total" radius={[0, 4, 4, 0]} />
                     </BarChart>

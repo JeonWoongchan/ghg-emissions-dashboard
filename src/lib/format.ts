@@ -33,6 +33,11 @@ export function formatKrw(value: number): string {
     return `${value.toLocaleString('ko-KR')}원`;
 }
 
+// 천 단위 축약 — 차트 Y축 tick 레이블용 (예: 1500 → "1.5k")
+export function formatKilo(value: number, decimals = 1): string {
+    return `${(value / 1000).toFixed(decimals)}k`;
+}
+
 // 회사명 말줄임 — 차트 축 레이블처럼 공간이 제한된 곳에 사용
 export function formatCompanyName(name: string, maxLength = 14): string {
     return name.length > maxLength ? `${name.slice(0, maxLength)}…` : name;

@@ -4,6 +4,7 @@
 
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SCOPE_DESCRIPTIONS, SCOPE_LABELS } from '@/constants/ghg-scope';
 import { formatEmissions } from '@/lib/format';
 import type { ScopeBreakdownItem } from '@/lib/emissions';
@@ -53,7 +54,7 @@ export function CompanyScopeChart({ scopes, totalEmissions }: Props) {
                             type="category"
                             dataKey="scope"
                             width={60}
-                            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                         />
@@ -68,12 +69,7 @@ export function CompanyScopeChart({ scopes, totalEmissions }: Props) {
                                 const scope = Object.entries(SCOPE_LABELS).find(([, v]) => v === label)?.[0];
                                 return scope ? SCOPE_DESCRIPTIONS[Number(scope) as 1 | 2 | 3] : label;
                             }}
-                            contentStyle={{
-                                backgroundColor: 'var(--card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)',
-                                fontSize: 12,
-                            }}
+                            contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         <Bar dataKey="total" radius={[0, 4, 4, 0]}>
                             <LabelList

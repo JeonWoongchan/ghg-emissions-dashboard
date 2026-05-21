@@ -4,8 +4,9 @@
 
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import type { AnnualTotal } from '@/lib/emissions';
-import { formatEmissions } from '@/lib/format';
+import { formatEmissions, formatKilo } from '@/lib/format';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 type Props = {
@@ -15,8 +16,6 @@ type Props = {
     description?: string;
     helpText?: string;
 };
-
-const axisTickStyle = { fontSize: 12, fill: 'var(--muted-foreground)' };
 
 // 연도별 배출량 바 차트 렌더링 — 현재 선택 연도 색상 강조
 export function YearlyComparisonChart({
@@ -47,16 +46,16 @@ export function YearlyComparisonChart({
                     <BarChart data={coloredData} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>
                         <XAxis
                             dataKey="year"
-                            tick={axisTickStyle}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                         />
                         <YAxis
-                            tick={axisTickStyle}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                             width={44}
-                            tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                            tickFormatter={(v) => formatKilo(v, 0)}
                         />
                         <Tooltip
                             formatter={(value) => [
@@ -66,12 +65,7 @@ export function YearlyComparisonChart({
                                 '총 배출량',
                             ]}
                             labelFormatter={(label) => `${label}년`}
-                            contentStyle={{
-                                backgroundColor: 'var(--card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)',
-                                fontSize: 12,
-                            }}
+                            contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         <Bar dataKey="total" radius={[4, 4, 0, 0]} />
                     </BarChart>

@@ -4,6 +4,7 @@
 
 import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SCOPE_LABELS } from '@/constants/ghg-scope';
 import { formatMonthShort, formatTooltipValue, formatYearMonth } from '@/lib/format';
 import {
@@ -21,8 +22,6 @@ type Props = {
     data: Record<string, number | string>[];
     year: number;
 };
-
-const axisTickStyle = { fontSize: 12, fill: 'var(--muted-foreground)' };
 
 // 월별 Scope 구성 스택 에어리어 차트 렌더링
 export function CompanyMonthlyChart({ data, year }: Props) {
@@ -42,22 +41,17 @@ export function CompanyMonthlyChart({ data, year }: Props) {
                         <XAxis
                             dataKey="month"
                             tickFormatter={formatMonthShort}
-                            tick={axisTickStyle}
+                            tick={CHART_AXIS_STYLE}
                             axisLine={false}
                             tickLine={false}
                         />
-                        <YAxis tick={axisTickStyle} axisLine={false} tickLine={false} width={44} />
+                        <YAxis tick={CHART_AXIS_STYLE} axisLine={false} tickLine={false} width={44} />
                         <Tooltip
                             labelFormatter={(label) =>
                                 typeof label === 'string' ? formatYearMonth(label) : ''
                             }
                             formatter={formatTooltipValue}
-                            contentStyle={{
-                                backgroundColor: 'var(--card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)',
-                                fontSize: 12,
-                            }}
+                            contentStyle={CHART_TOOLTIP_STYLE}
                         />
                         <Legend
                             wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
