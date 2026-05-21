@@ -23,3 +23,5 @@ export type Post = {
   dateTime: string;
   content: string;
 };
+
+export type CompanyWithTotal = Company & { total: number };

@@ -1,9 +1,11 @@
 // 배출량 데이터 집계 유틸리티 — 순수 함수로 구성하여 단위 테스트 용이
 
+import { SCOPE_MAP } from '@/constants/ghg-scope';
 import type { Company, GhgEmission } from '@/types';
 
 export type MonthlyTotal = { month: string; total: number };
 export type CompanyTotal = { id: string; name: string; country: string; total: number };
+export type ScopeBreakdownItem = { scope: 1 | 2 | 3; pct: number };
 
 // 병합 데이터에서 전체 합산 열을 식별하는 키
 export const TOTAL_EMISSIONS_KEY = '전체 합산' as const;
@@ -101,4 +103,18 @@ function getUniqueMonths(companies: Company[]): string[] {
         for (const e of company.emissions) months.add(e.yearMonth);
     }
     return Array.from(months).sort();
+}
+
+// 배출량 데이터로 GHG Scope 1/2/3 비중 계산
+export function getScopeBreakdown(emissions: GhgEmission[]): ScopeBreakdownItem[] {
+    const totals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };
+    for (const e of emissions) {
+        const scope = (SCOPE_MAP[e.source] ?? 3) as 1 | 2 | 3;
+        totals[scope] += e.emissions;
+    }
+    const total = totals[1] + totals[2] + totals[3];
+    return ([1, 2, 3] as const).map((scope) => ({
+        scope,
+        pct: total > 0 ? (totals[scope] / total) * 100 : 0,
+    }));
 }

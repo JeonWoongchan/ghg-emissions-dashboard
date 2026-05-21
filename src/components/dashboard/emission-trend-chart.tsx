@@ -3,23 +3,14 @@
 // 월간 배출량 추이 차트 — 전체 합산 뷰 / 회사별 비교 뷰 탭 전환
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MultiSelectPopover } from '@/components/shared/multi-select-popover';
 import { CHART_COLORS } from '@/constants/chart';
 import { TOTAL_EMISSIONS_KEY } from '@/lib/emissions';
 import {formatMonthShort, formatTooltipValue, formatYearMonth} from '@/lib/format';
 import type { Company } from '@/types';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import {
@@ -78,65 +69,6 @@ function ChartAxes() {
     );
 }
 
-type CompanyMultiSelectProps = {
-    companies: Company[];
-    label: string;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    isSelected: (id: string) => boolean;
-    isDisabled?: (id: string) => boolean;
-    onToggle: (id: string) => void;
-};
-
-// 회사 검색·선택 가능한 공통 멀티 셀렉트 드롭다운
-function CompanyMultiSelect({
-    companies,
-    label,
-    open,
-    onOpenChange,
-    isSelected,
-    isDisabled,
-    onToggle,
-}: CompanyMultiSelectProps) {
-    return (
-        <Popover open={open} onOpenChange={onOpenChange}>
-            <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1.5">
-                    <ChevronsUpDown className="size-3.5" />
-                    {label}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-56 p-0" align="start">
-                <Command>
-                    <CommandInput placeholder="회사 검색..." />
-                    <CommandList>
-                        <CommandEmpty>검색 결과 없음</CommandEmpty>
-                        <CommandGroup>
-                            {companies.map((company) => {
-                                const selected = isSelected(company.id);
-                                const disabled = isDisabled?.(company.id) ?? false;
-                                return (
-                                    <CommandItem
-                                        key={company.id}
-                                        value={company.name}
-                                        onSelect={() => onToggle(company.id)}
-                                        disabled={disabled}
-                                        className={disabled ? 'opacity-40' : ''}
-                                    >
-                                        <Check
-                                            className={`mr-2 size-4 ${selected ? 'opacity-100' : 'opacity-0'}`}
-                                        />
-                                        {company.name}
-                                    </CommandItem>
-                                );
-                            })}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
-    );
-}
 
 type CompanyBadgeListProps = {
     companies: Company[];
@@ -189,14 +121,15 @@ function AggregateTab({ data, companies }: { data: Props['data']; companies: Com
     return (
         <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-                <CompanyMultiSelect
-                    companies={companies}
+                <MultiSelectPopover
+                    items={companies.map((c) => ({ id: c.id, label: c.name }))}
                     label={isMaxReached ? `최대 ${MAX_COMPARE}개 선택됨` : '회사 비교 추가'}
                     open={open}
-                    onOpenChange={setOpen}
-                    isSelected={(id) => selectedIds.includes(id)}
-                    isDisabled={(id) => !selectedIds.includes(id) && isMaxReached}
-                    onToggle={toggleCompany}
+                    onOpenChangeAction={setOpen}
+                    isSelectedAction={(id) => selectedIds.includes(id)}
+                    isDisabledAction={(id) => !selectedIds.includes(id) && isMaxReached}
+                    onToggleAction={toggleCompany}
+                    searchPlaceholder="회사 검색..."
                 />
                 <CompanyBadgeList
                     companies={selectedCompanies}
@@ -263,14 +196,15 @@ function ComparisonTab({ data, companies }: { data: Props['data']; companies: Co
     return (
         <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-                <CompanyMultiSelect
-                    companies={companies}
+                <MultiSelectPopover
+                    items={companies.map((c) => ({ id: c.id, label: c.name }))}
                     label={isAllMode ? '전체 표시 중' : `${filteredIds.length}개 선택됨`}
                     open={open}
-                    onOpenChange={setOpen}
+                    onOpenChangeAction={setOpen}
                     // 드롭다운 체크 여부 — 전체 모드이면 모든 항목이 체크 상태
-                    isSelected={(id) => isAllMode || filteredIds.includes(id)}
-                    onToggle={toggleCompany}
+                    isSelectedAction={(id) => isAllMode || filteredIds.includes(id)}
+                    onToggleAction={toggleCompany}
+                    searchPlaceholder="회사 검색..."
                 />
                 {!isAllMode && (
                     <CompanyBadgeList companies={visibleCompanies} onRemove={toggleCompany} />
