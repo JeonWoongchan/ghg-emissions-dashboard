@@ -38,6 +38,7 @@ export type RiskSummary = {
     highRiskCount: number;
     averageScore: number;
     increasingCompaniesCount: number;
+    improvingCount: number;
 };
 
 type MonthlyTotal = {
@@ -90,6 +91,7 @@ export function getRiskSummary(assessments: RiskAssessment[]): RiskSummary {
             highRiskCount: 0,
             averageScore: 0,
             increasingCompaniesCount: 0,
+            improvingCount: 0,
         };
     }
 
@@ -101,6 +103,9 @@ export function getRiskSummary(assessments: RiskAssessment[]): RiskSummary {
         averageScore: Math.round(totalScore / assessments.length),
         increasingCompaniesCount: assessments.filter(
             (item) => item.recentTrendPct !== null && item.recentTrendPct > 0
+        ).length,
+        improvingCount: assessments.filter(
+            (item) => item.recentTrendPct !== null && item.recentTrendPct < 0
         ).length,
     };
 }

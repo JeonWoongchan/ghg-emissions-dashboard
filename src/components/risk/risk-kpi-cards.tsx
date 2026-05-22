@@ -4,7 +4,7 @@ import { MetricCard } from '@/components/shared/metric-card';
 import { CARBON_TAX_RATE_KRW_PER_TCO2E } from '@/constants/risk';
 import { formatEmissions, formatKrw } from '@/lib/format';
 import type { RiskSummary } from '@/lib/risk';
-import { AlertTriangle, Calculator, Gauge, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Calculator, Gauge, TrendingDown } from 'lucide-react';
 
 type Props = {
     summary: RiskSummary;
@@ -43,11 +43,16 @@ export function RiskKpiCards({ summary, year, totalCompanies }: Props) {
                 icon={Gauge}
             />
             <MetricCard
-                title="증가 추세 회사"
-                tooltip="최근 3개월 평균 배출량이 직전 3개월 평균보다 증가한 회사 수입니다."
-                value={summary.increasingCompaniesCount}
+                title="감소 추세 회사"
+                tooltip="최근 3개월 평균 배출량이 직전 3개월 평균보다 감소한 회사 수입니다. 배출 모멘텀이 개선되고 있는 기업입니다."
+                value={
+                    <>
+                        <span className="text-success">{summary.improvingCount}</span>
+                        <span className="text-muted-foreground"> / {totalCompanies}</span>
+                    </>
+                }
                 helper="최근 추세 기준"
-                icon={TrendingUp}
+                icon={TrendingDown}
             />
         </div>
     );
