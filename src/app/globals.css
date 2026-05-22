@@ -180,8 +180,9 @@
   html {
     @apply font-sans;
   }
-  /* 마우스 클릭 시 Recharts SVG 포커스 아웃라인 제거 (키보드 탐색은 유지) */
-  .recharts-surface:focus-visible {
+  /* Recharts 차트 클릭 시 포커스 아웃라인 제거 — SVG 요소는 키보드 탐색 대상이 아님 */
+  .recharts-wrapper,
+  .recharts-wrapper * {
     outline: none;
   }
 }

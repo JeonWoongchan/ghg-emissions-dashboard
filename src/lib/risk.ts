@@ -77,8 +77,12 @@ export function getRiskAssessments(
     return companies
         .map((company) => {
             const emissions = filterByYear(company.emissions, year);
-            // 추세 계산은 연도 경계를 넘어 최근 N개월을 사용하도록 전체 emissions 전달
-            return assessCompanyRisk(company, emissions, company.emissions, maxAnnualEmissions, taxRate);
+            // 선택 연도 이후의 데이터가 과거 연도 리스크에 섞이지 않도록 기준 연도 말일까지 사용
+            const trendEmissions = company.emissions.filter(
+                (emission) => emission.yearMonth <= `${year}-12`
+            );
+            // 추세 계산은 기준 연도 이전 범위에서 연도 경계를 넘어 최근 N개월을 사용
+            return assessCompanyRisk(company, emissions, trendEmissions, maxAnnualEmissions, taxRate);
         })
         .sort((a, b) => b.score - a.score || b.annualEmissions - a.annualEmissions);
 }
