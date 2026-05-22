@@ -4,6 +4,7 @@ import {
     filterByYear,
     getCompanyTotalsForSource,
     getMonthlyTotalsBySource,
+    getScopeTotals,
     getTotalBySource,
 } from '@/lib/emissions';
 import type { Company } from '@/types';
@@ -27,11 +28,8 @@ export function useSourceMetrics(
         const activeSourceId = requestedSource ?? allSources[0]?.source ?? null;
         const activeSource = allSources.find((s) => s.source === activeSourceId) ?? null;
 
-        // Scope별 합계
-        const scopeTotals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };
-        for (const s of allSources) {
-            scopeTotals[s.scope] += s.total;
-        }
+        // Scope별 합계 — allEmissions 재사용으로 추가 순회 없음
+        const scopeTotals = getScopeTotals(allEmissions);
 
         // 드릴다운 데이터 — 선택 배출원 기준
         const companyBreakdown = activeSourceId

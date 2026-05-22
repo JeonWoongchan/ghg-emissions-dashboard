@@ -213,12 +213,18 @@ export function filterByYear(emissions: GhgEmission[], year: number): GhgEmissio
 }
 
 // 배출량 데이터로 GHG Scope 1/2/3 비중 계산
-export function getScopeBreakdown(emissions: GhgEmission[]): ScopeBreakdownItem[] {
+// Scope별 배출량 절댓값 집계 — 미등록 배출원은 Scope 3으로 분류
+export function getScopeTotals(emissions: GhgEmission[]): Record<1 | 2 | 3, number> {
     const totals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };
     for (const e of emissions) {
         const scope = (SCOPE_MAP[e.source] ?? 3) as 1 | 2 | 3;
         totals[scope] += e.emissions;
     }
+    return totals;
+}
+
+export function getScopeBreakdown(emissions: GhgEmission[]): ScopeBreakdownItem[] {
+    const totals = getScopeTotals(emissions);
     const total = totals[1] + totals[2] + totals[3];
     return ([1, 2, 3] as const).map((scope) => ({
         scope,

@@ -1,6 +1,5 @@
 // 대시보드 집계 지표 계산 훅 — companies 참조 변경 시에만 재계산
 
-import { SCOPE_MAP } from '@/constants/ghg-scope';
 import {
     filterByYear,
     getAnnualTotals,
@@ -9,6 +8,7 @@ import {
     getMonthlyByCompany,
     getMonthlyTotals,
     getSelectedYear,
+    getScopeTotals,
     getTotalByCompany,
 } from '@/lib/emissions';
 import { getRiskAssessments, getRiskSummary } from '@/lib/risk';
@@ -35,14 +35,7 @@ export function useDashboardMetrics(companies: Company[], year?: number | null) 
         const assessments = getRiskAssessments(companies, selectedYear);
         const riskSummary = getRiskSummary(assessments);
 
-        // 선택 연도 Scope별 배출량 집계
-        const scopeTotals: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };
-        filtered.forEach((c) =>
-            c.emissions.forEach((e) => {
-                const scope = SCOPE_MAP[e.source];
-                if (scope) scopeTotals[scope] += e.emissions;
-            })
-        );
+        const scopeTotals = getScopeTotals(filtered.flatMap((c) => c.emissions));
 
         // 작년 같은 기간 대비 변화율 — 현재 연도의 최신 월까지만 비교
         const currentPeriodTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0);
