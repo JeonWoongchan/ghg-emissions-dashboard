@@ -2,8 +2,15 @@
 
 import { CardHeading } from '@/components/shared/card-heading';
 import { MetricCard } from '@/components/shared/metric-card';
-import { ScopeDonutChart } from '@/components/shared/scope-donut-chart';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import dynamic from 'next/dynamic';
+
+// recharts 번들을 초기 JS에서 분리하기 위한 동적 임포트
+const ScopeDonutChart = dynamic(
+    () => import('@/components/shared/scope-donut-chart').then((m) => ({ default: m.ScopeDonutChart })),
+    { loading: () => <Skeleton className="h-36 rounded-lg" />, ssr: false }
+);
 import { SCOPES } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
 import type { MonthlyTotal } from '@/lib/emissions';

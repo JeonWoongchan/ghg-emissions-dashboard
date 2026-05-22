@@ -16,11 +16,23 @@ import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useSourceMetrics } from '@/hooks/sources/useSourceMetrics';
 import { getAvailableYears, getCompanyScatterPoints, getSelectedYear } from '@/lib/emissions';
 import { formatEmissions } from '@/lib/format';
+import dynamic from 'next/dynamic';
 import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useMemo } from 'react';
-import { ScopeScatterCharts } from './scope-scatter-charts';
-import { SourceDrilldown } from './source-drilldown';
-import { SourceRankingChart } from './source-ranking-chart';
+
+// recharts 번들을 초기 JS에서 분리하기 위한 동적 임포트
+const SourceRankingChart = dynamic(
+    () => import('./source-ranking-chart').then((m) => ({ default: m.SourceRankingChart })),
+    { loading: () => <Skeleton className="h-80 rounded-xl" />, ssr: false }
+);
+const SourceDrilldown = dynamic(
+    () => import('./source-drilldown').then((m) => ({ default: m.SourceDrilldown })),
+    { loading: () => <Skeleton className="h-75 rounded-xl" />, ssr: false }
+);
+const ScopeScatterCharts = dynamic(
+    () => import('./scope-scatter-charts').then((m) => ({ default: m.ScopeScatterCharts })),
+    { loading: () => <Skeleton className="h-60 rounded-xl" />, ssr: false }
+);
 
 // 배출원 분석 로딩 스켈레톤
 function SourcesSkeleton() {

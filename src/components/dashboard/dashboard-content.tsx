@@ -4,14 +4,29 @@
 
 import { ErrorState } from '@/components/shared/error-state';
 import { YearSelector } from '@/components/shared/year-selector';
-import { YearlyComparisonChart } from '@/components/shared/yearly-comparison-chart';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useDashboardMetrics } from '@/hooks/dashboard/useDashboardMetrics';
+import dynamic from 'next/dynamic';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { CompanyBarChart } from './company-bar-chart';
-import { EmissionTrendChart } from './emission-trend-chart';
 import { KpiCards } from './kpi-cards';
+
+// recharts 번들을 초기 JS에서 분리하기 위한 동적 임포트
+const EmissionTrendChart = dynamic(
+    () => import('./emission-trend-chart').then((m) => ({ default: m.EmissionTrendChart })),
+    { loading: () => <Skeleton className="h-92 rounded-xl" />, ssr: false }
+);
+const CompanyBarChart = dynamic(
+    () => import('./company-bar-chart').then((m) => ({ default: m.CompanyBarChart })),
+    { loading: () => <Skeleton className="h-79 rounded-xl" />, ssr: false }
+);
+const YearlyComparisonChart = dynamic(
+    () =>
+        import('@/components/shared/yearly-comparison-chart').then((m) => ({
+            default: m.YearlyComparisonChart,
+        })),
+    { loading: () => <Skeleton className="h-52 rounded-xl" />, ssr: false }
+);
 
 // 대시보드 레이아웃 전용 로딩 스켈레톤
 function DashboardSkeleton() {

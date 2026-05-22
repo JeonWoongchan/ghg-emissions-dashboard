@@ -4,7 +4,6 @@
 
 import { ErrorState } from '@/components/shared/error-state';
 import { YearSelector } from '@/components/shared/year-selector';
-import { YearlyComparisonChart } from '@/components/shared/yearly-comparison-chart';
 import { Skeleton } from '@/components/ui/skeleton';
 import { COUNTRY_FLAGS } from '@/constants/countries';
 import { useCompany } from '@/hooks/companies/useCompanies';
@@ -20,16 +19,35 @@ import {
     sumEmissions,
 } from '@/lib/emissions';
 import { formatEmissions } from '@/lib/format';
-import { parseAsInteger, useQueryState } from 'nuqs';
-import { useMemo } from 'react';
-import { CompanyMonthlyChart } from './company-monthly-chart';
-import { CompanyRiskCard } from './company-risk-card';
-import { CompanyScopeChart } from './company-scope-chart';
-import { CompanySourceChart } from './company-source-chart';
 import { ActionNotesPanel } from '@/components/posts/action-notes-panel';
 import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
 import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
+import dynamic from 'next/dynamic';
+import { parseAsInteger, useQueryState } from 'nuqs';
+import { useMemo } from 'react';
 import { CompanyReductionScenario } from './company-reduction-scenario';
+import { CompanyRiskCard } from './company-risk-card';
+
+// recharts 번들을 초기 JS에서 분리하기 위한 동적 임포트
+const CompanyMonthlyChart = dynamic(
+    () => import('./company-monthly-chart').then((m) => ({ default: m.CompanyMonthlyChart })),
+    { loading: () => <Skeleton className="h-70 rounded-xl" />, ssr: false }
+);
+const YearlyComparisonChart = dynamic(
+    () =>
+        import('@/components/shared/yearly-comparison-chart').then((m) => ({
+            default: m.YearlyComparisonChart,
+        })),
+    { loading: () => <Skeleton className="h-[200px] rounded-xl" />, ssr: false }
+);
+const CompanyScopeChart = dynamic(
+    () => import('./company-scope-chart').then((m) => ({ default: m.CompanyScopeChart })),
+    { loading: () => <Skeleton className="h-65 rounded-xl" />, ssr: false }
+);
+const CompanySourceChart = dynamic(
+    () => import('./company-source-chart').then((m) => ({ default: m.CompanySourceChart })),
+    { loading: () => <Skeleton className="h-65 rounded-xl" />, ssr: false }
+);
 
 // 회사 상세 로딩 중 스켈레톤
 function CompanyDetailSkeleton() {
