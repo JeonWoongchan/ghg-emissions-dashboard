@@ -9,4 +9,6 @@ export const countries: Country[] = [
     { code: 'GB', name: 'United Kingdom' },
     { code: 'FR', name: 'France' },
     { code: 'AU', name: 'Australia' },
+    { code: 'NO', name: 'Norway' },
+    { code: 'SG', name: 'Singapore' },
 ];
