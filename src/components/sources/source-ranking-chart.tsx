@@ -2,7 +2,8 @@
 
 // 배출원 랭킹 차트 — 전체: 수평 바 / Scope별: 도넛 3개 나란히
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import {
@@ -139,20 +140,18 @@ export function SourceRankingChart({
 
     return (
         <Card>
-            <CardHeader>
-                <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <CardTitle>배출원 랭킹</CardTitle>
-                        <CardDescription>{year}년 배출원별 총 배출량 (tCO₂e)</CardDescription>
-                    </div>
+            <CardHeading
+                title="배출원 랭킹"
+                description={`${year}년 배출원별 총 배출량 (tCO₂e)`}
+                action={
                     <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'all' | 'scope')}>
                         <TabsList>
                             <TabsTrigger value="all">전체</TabsTrigger>
                             <TabsTrigger value="scope">Scope별</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                </div>
-            </CardHeader>
+                }
+            />
             <CardContent>
                 {viewMode === 'all' ? (
                     /* 전체 탭 — 수평 바 차트 */

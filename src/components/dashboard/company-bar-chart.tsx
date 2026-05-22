@@ -2,12 +2,12 @@
 
 // 연간 배출량 상위 N개 회사 비교 바 차트 렌더링
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { ROUTES } from '@/constants/navigation';
 import type { CompanyTotal } from '@/lib/emissions';
 import { formatCompanyName, formatEmissions, formatKilo } from '@/lib/format';
-import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -34,13 +34,11 @@ export function CompanyBarChart({ data, year }: Props) {
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center">
-                    연간 배출량 상위 {TOP_N}개 회사
-                    <InfoTooltip content="연간 누적 배출량 기준 상위 10개 기업을 수평 막대 그래프로 비교합니다. 막대를 클릭하면 해당 기업 상세 페이지로 이동합니다." />
-                </CardTitle>
-                <CardDescription>{year}년 누적 온실가스 배출량 기준 (tCO₂e)</CardDescription>
-            </CardHeader>
+            <CardHeading
+                title={`연간 배출량 상위 ${TOP_N}개 회사`}
+                tooltip="연간 누적 배출량 기준 상위 10개 기업을 수평 막대 그래프로 비교합니다. 막대를 클릭하면 해당 기업 상세 페이지로 이동합니다."
+                description={`${year}년 누적 온실가스 배출량 기준 (tCO₂e)`}
+            />
             <CardContent>
                 <ResponsiveContainer width="100%" height={280}>
                     <BarChart

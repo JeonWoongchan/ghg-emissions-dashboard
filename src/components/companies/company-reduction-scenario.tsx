@@ -2,8 +2,8 @@
 
 // 회사 상세 Scope별 감축 시나리오 — 스코프별 슬라이더로 절감량·탄소세 효과 시뮬레이션
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import {
     SCOPE_COLORS,
@@ -43,12 +43,11 @@ export function CompanyReductionScenario({ scopeEmissions, totalEmissions, year 
 
     return (
         <Card>
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center">
-                    감축 시나리오
-                    <InfoTooltip content={`Scope별 감축 목표를 설정하면 ${year}년 기준 절감 효과를 즉시 확인할 수 있습니다. 가정 세율 ${formatEmissions(CARBON_TAX_RATE_KRW_PER_TCO2E)}원/tCO₂e 기준 시나리오이며 실제 세무 산정이 아닙니다.`} />
-                </CardTitle>
-            </CardHeader>
+            <CardHeading
+                title="감축 시나리오"
+                tooltip={`Scope별 감축 목표를 설정하면 ${year}년 기준 절감 효과를 즉시 확인할 수 있습니다. 가정 세율 ${formatEmissions(CARBON_TAX_RATE_KRW_PER_TCO2E)}원/tCO₂e 기준 시나리오이며 실제 세무 산정이 아닙니다.`}
+                className="pb-3"
+            />
 
             <CardContent className="space-y-5">
                 {/* Scope별 슬라이더 */}

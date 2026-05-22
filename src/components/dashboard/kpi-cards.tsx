@@ -1,9 +1,9 @@
 // 대시보드 상단 KPI 요약 카드 4종 렌더링
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
+import { CardHeading } from '@/components/shared/card-heading';
 import { MetricCard } from '@/components/shared/metric-card';
 import { ScopeStackedBar } from '@/components/shared/scope-stacked-bar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { SCOPES } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
 import type { MonthlyTotal } from '@/lib/emissions';
@@ -82,12 +82,12 @@ function ScopeBreakdownCard({ scopeTotals }: { scopeTotals: Record<1 | 2 | 3, nu
     return (
         <Link href={ROUTES.sources} className="block">
             <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
-                        Scope별 배출 구성
-                        <InfoTooltip content="관리 대상 전체의 Scope 1(직접 배출) · Scope 2(전기·열) · Scope 3(가치사슬) 비율입니다. 배출원 분석 페이지에서 배출원별 상세 현황을 확인할 수 있습니다." />
-                    </CardTitle>
-                </CardHeader>
+                <CardHeading
+                    title="Scope별 배출 구성"
+                    tooltip="관리 대상 전체의 Scope 1(직접 배출) · Scope 2(전기·열) · Scope 3(가치사슬) 비율입니다. 배출원 분석 페이지에서 배출원별 상세 현황을 확인할 수 있습니다."
+                    className="pb-2"
+                    titleClassName="text-sm font-medium text-muted-foreground"
+                />
                 <CardContent className="h-13">
                     <ScopeStackedBar scopes={scopeBarItems} isKpiCard={true}/>
                 </CardContent>

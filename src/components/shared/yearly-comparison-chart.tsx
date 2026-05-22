@@ -2,8 +2,8 @@
 
 // 연도별 총 배출량 비교 바 차트 — 선택된 연도 강조 표시
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import type { AnnualTotal } from '@/lib/emissions';
 import { formatEmissions, formatKilo } from '@/lib/format';
@@ -34,13 +34,7 @@ export function YearlyComparisonChart({
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center">
-                    {title}
-                    {helpText && <InfoTooltip content={helpText} />}
-                </CardTitle>
-                <CardDescription>{description}</CardDescription>
-            </CardHeader>
+            <CardHeading title={title} tooltip={helpText} description={description} />
             <CardContent>
                 <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={coloredData} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>

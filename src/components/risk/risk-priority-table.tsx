@@ -1,7 +1,8 @@
 // 회사별 리스크 우선순위 테이블 렌더링
 
+import { CardHeading } from '@/components/shared/card-heading';
 import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { CARBON_TAX_RATE_KRW_PER_TCO2E } from '@/constants/risk';
 import { formatEmissions } from '@/lib/format';
 import type { RiskAssessment } from '@/lib/risk';
@@ -16,15 +17,11 @@ type Props = {
 export function RiskPriorityTable({ assessments, year }: Props) {
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center">
-                    관리 우선순위
-                    <InfoTooltip content="리스크 점수는 연간 배출량, 최근 3개월 증가 추세, Scope 구성을 종합해 산정합니다. 실제 규제 등급이 아니라 내부 판단용 지표입니다." />
-                </CardTitle>
-                <CardDescription>
-                    {year}년 기준 탄소세 노출액과 배출 증가 리스크가 큰 관리 대상 회사
-                </CardDescription>
-            </CardHeader>
+            <CardHeading
+                title="관리 우선순위"
+                tooltip="리스크 점수는 연간 배출량, 최근 3개월 증가 추세, Scope 구성을 종합해 산정합니다. 실제 규제 등급이 아니라 내부 판단용 지표입니다."
+                description={`${year}년 기준 탄소세 노출액과 배출 증가 리스크가 큰 관리 대상 회사`}
+            />
             <CardContent>
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-230 text-sm">

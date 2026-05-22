@@ -2,8 +2,8 @@
 
 // 회사 GHG Scope 1/2/3 연간 배출량 비중 차트 렌더링
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SCOPE_DESCRIPTIONS, SCOPE_LABELS } from '@/constants/ghg-scope';
 import { formatEmissions } from '@/lib/format';
@@ -35,13 +35,11 @@ export function CompanyScopeChart({ scopes, totalEmissions }: Props) {
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center">
-                    Scope 구분 배출량
-                    <InfoTooltip content={'GHG Protocol 국제 기준에 따라 배출량을 3가지로 구분합니다.\n\nScope 1 (직접): 직접 연소하는 연료(경유·휘발유·천연가스 등)\nScope 2 (간접): 구매한 전기·열·증기\nScope 3 (가치사슬): 물류·출장·폐기물 등 공급망 전반\n\n막대 오른쪽 비율(%)로 구성 비중을 확인할 수 있습니다.'} />
-                </CardTitle>
-                <CardDescription>GHG Protocol 기준 직접·간접 배출 구분 (tCO₂e)</CardDescription>
-            </CardHeader>
+            <CardHeading
+                title="Scope 구분 배출량"
+                tooltip={'GHG Protocol 국제 기준에 따라 배출량을 3가지로 구분합니다.\n\nScope 1 (직접): 직접 연소하는 연료(경유·휘발유·천연가스 등)\nScope 2 (간접): 구매한 전기·열·증기\nScope 3 (가치사슬): 물류·출장·폐기물 등 공급망 전반\n\n막대 오른쪽 비율(%)로 구성 비중을 확인할 수 있습니다.'}
+                description="GHG Protocol 기준 직접·간접 배출 구분 (tCO₂e)"
+            />
             <CardContent>
                 <ResponsiveContainer width="100%" height={180}>
                     <BarChart

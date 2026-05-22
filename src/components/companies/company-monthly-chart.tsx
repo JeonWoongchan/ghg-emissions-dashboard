@@ -2,8 +2,8 @@
 
 // 회사 월별 Scope 1/2/3 스택 에어리어 차트 렌더링
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SCOPE_LABELS } from '@/constants/ghg-scope';
 import { formatMonthShort, formatTooltipValue, formatYearMonth } from '@/lib/format';
@@ -27,13 +27,11 @@ type Props = {
 export function CompanyMonthlyChart({ data, year }: Props) {
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center">
-                    월별 배출량 추이
-                    <InfoTooltip content="Scope 1·2·3을 구분해 월별 배출량 변화를 누적 에어리어 차트로 표시합니다. 특정 영역에 마우스를 올리면 해당 월의 Scope별 상세 수치를 확인할 수 있습니다." />
-                </CardTitle>
-                <CardDescription>Scope 구성 변화 · {year}년 월별 (tCO₂e)</CardDescription>
-            </CardHeader>
+            <CardHeading
+                title="월별 배출량 추이"
+                tooltip="Scope 1·2·3을 구분해 월별 배출량 변화를 누적 에어리어 차트로 표시합니다. 특정 영역에 마우스를 올리면 해당 월의 Scope별 상세 수치를 확인할 수 있습니다."
+                description={`Scope 구성 변화 · ${year}년 월별 (tCO₂e)`}
+            />
             <CardContent>
                 <ResponsiveContainer width="100%" height={280}>
                     <AreaChart data={data} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>

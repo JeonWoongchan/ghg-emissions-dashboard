@@ -2,8 +2,8 @@
 
 // 선택 배출원 드릴다운 — 회사별 분포 + 월별 추이
 
-import { InfoTooltip } from '@/components/shared/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardHeading } from '@/components/shared/card-heading';
+import { Card, CardContent } from '@/components/ui/card';
 import { CHART_AXIS_STYLE, CHART_TOOLTIP_STYLE } from '@/constants/chart';
 import { SCOPE_COLORS, SOURCE_LABELS } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
@@ -41,13 +41,11 @@ export function SourceDrilldown({ sourceId, scope, color: colorProp, companyBrea
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>
-                    <span style={{ color }}>{label}</span> 상세 분석
-                    <InfoTooltip content="위 배출원 랭킹 차트에서 항목을 클릭하면 해당 배출원의 상세 분석을 확인할 수 있습니다. 전체 탭의 막대, 또는 Scope별 탭의 도넛 슬라이스와 목록 항목을 클릭하세요." />
-                </CardTitle>
-                <CardDescription>{year}년 · 회사별 배출량 및 월별 추이</CardDescription>
-            </CardHeader>
+            <CardHeading
+                title={<><span style={{ color }}>{label}</span> 상세 분석</>}
+                tooltip="위 배출원 랭킹 차트에서 항목을 클릭하면 해당 배출원의 상세 분석을 확인할 수 있습니다. 전체 탭의 막대, 또는 Scope별 탭의 도넛 슬라이스와 목록 항목을 클릭하세요."
+                description={`${year}년 · 회사별 배출량 및 월별 추이`}
+            />
             <CardContent>
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {/* 회사별 배출량 */}
