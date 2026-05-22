@@ -27,6 +27,8 @@ import { CompanySourceChart } from './company-source-chart';
 import { CompanyPosts } from '@/components/posts/company-posts';
 import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
 import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
+import { CompanyReductionScenario } from './company-reduction-scenario';
+import { SCOPE_MAP } from '@/constants/ghg-scope';
 
 // 회사 상세 로딩 중 스켈레톤
 function CompanyDetailSkeleton() {
@@ -71,6 +73,13 @@ export function CompanyDetailContent({ id }: { id: string }) {
     const monthlyByScope = getMonthlyByScope(filteredEmissions);
     const scopes = getScopeBreakdown(filteredEmissions);
     const totalBySource = getTotalBySource(filteredEmissions);
+
+    // Scope별 절댓값 집계 — 감축 시나리오 입력값
+    const scopeEmissions: Record<1 | 2 | 3, number> = { 1: 0, 2: 0, 3: 0 };
+    filteredEmissions.forEach((e) => {
+        const scope = SCOPE_MAP[e.source];
+        if (scope) scopeEmissions[scope] += e.emissions;
+    });
     // 연도 필터 전 전체 데이터로 연도별 비교 차트 생성
     const yearlyTotals = getAnnualTotals(company.emissions);
     const flag = COUNTRY_FLAGS[company.country] ?? '';
@@ -105,6 +114,13 @@ export function CompanyDetailContent({ id }: { id: string }) {
             {riskAssessment && (
                 <CompanyRiskCard assessment={riskAssessment} rank={riskRank} total={riskTotal} />
             )}
+
+            {/* Scope별 감축 시나리오 */}
+            <CompanyReductionScenario
+                scopeEmissions={scopeEmissions}
+                totalEmissions={annualTotal}
+                year={selectedYear}
+            />
 
             {/* 월별 Scope 스택 에어리어 차트 */}
             <CompanyMonthlyChart data={monthlyByScope} year={selectedYear} />
