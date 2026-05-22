@@ -12,7 +12,7 @@ export function ErrorState({ message = '데이터를 불러오지 못했습니�
     return (
         <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
             <p className="text-muted-foreground">{message}</p>
-            <Button variant="outline" onClick={onRetry}>
+            <Button variant="outline" onClick={() => onRetry()}>
                 다시 시도
             </Button>
         </div>

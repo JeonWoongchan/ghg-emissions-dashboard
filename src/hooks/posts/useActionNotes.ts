@@ -20,7 +20,7 @@ export function useActionNotes(companyId: string) {
     );
     const bottomRef = useRef<HTMLDivElement>(null);
 
-    const { data: posts, isLoading } = usePostsByCompany(companyId);
+    const { data: posts, isLoading, isFetching, error, refetch } = usePostsByCompany(companyId);
     // 작성·수정 mutation을 분리해 isPending이 서로 영향을 주지 않도록 함
     const { mutate: createPost, isPending: isCreating } = useSavePost();
     const { mutate: updatePost, isPending: isUpdating } = useSavePost();
@@ -141,6 +141,9 @@ export function useActionNotes(companyId: string) {
         // 데이터
         posts,
         isLoading,
+        isFetching,
+        error,
+        refetch,
         sortedPosts,
         // 로딩 상태
         isCreating,

@@ -36,6 +36,8 @@ export function ActionNotesPanel({ companyId }: Props) {
         setEditingState,
         posts,
         isLoading,
+        error,
+        refetch,
         sortedPosts,
         isCreating,
         isUpdating,
@@ -119,7 +121,20 @@ export function ActionNotesPanel({ companyId }: Props) {
                                 불러오는 중...
                             </p>
                         )}
-                        {!isLoading && sortedPosts.length === 0 && (
+                        {!isLoading && error && (
+                            <div className="flex flex-col items-center gap-3 py-8 text-center">
+                                <p className="text-muted-foreground text-sm">
+                                    게시글을 불러오지 못했습니다.
+                                </p>
+                                <button
+                                    onClick={() => void refetch()}
+                                    className="text-primary hover:text-primary/80 text-xs underline underline-offset-2 transition-colors"
+                                >
+                                    다시 시도
+                                </button>
+                            </div>
+                        )}
+                        {!isLoading && !error && sortedPosts.length === 0 && (
                             <p className="text-muted-foreground py-8 text-center text-sm">
                                 아직 작성된 Action Notes가 없습니다.
                             </p>

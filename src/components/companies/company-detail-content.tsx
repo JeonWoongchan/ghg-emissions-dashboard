@@ -56,7 +56,7 @@ function CompanyDetailSkeleton() {
             <Skeleton className="h-16 w-64 rounded-xl" />
             <Skeleton className="h-40 rounded-xl" />
             <Skeleton className="h-70 rounded-xl" />
-            <Skeleton className="h-[200px] rounded-xl" />
+            <Skeleton className="h-50 rounded-xl" />
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Skeleton className="h-65 rounded-xl" />
                 <Skeleton className="h-65 rounded-xl" />
