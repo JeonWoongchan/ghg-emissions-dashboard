@@ -53,8 +53,8 @@ export function RiskPriorityRow({ assessment }: Props) {
             <TableCell className="py-4 pr-4 text-center">{getDominantScopeLabel(assessment)}</TableCell>
             <TableCell className="py-4 whitespace-normal">
                 <ul className="max-w-80 space-y-1 text-muted-foreground">
-                    {assessment.reasons.map((reason) => (
-                        <li key={reason} className="leading-relaxed">
+                    {assessment.reasons.map((reason, i) => (
+                        <li key={i} className="leading-relaxed">
                             {reason}
                         </li>
                     ))}

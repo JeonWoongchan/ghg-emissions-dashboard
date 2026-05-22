@@ -56,15 +56,22 @@ function SortableHead({
     const Icon = isActive ? (direction === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown;
     const { head, flex } = ALIGN[align];
 
+    const ariaSort = isActive ? (direction === 'asc' ? 'ascending' : 'descending') : undefined;
+
     return (
-        <TableHead className={`py-3 pr-4 text-muted-foreground ${head}`}>
+        <TableHead
+            scope="col"
+            aria-sort={ariaSort}
+            className={`py-3 pr-4 text-muted-foreground ${head}`}
+        >
             <span className={`inline-flex w-full items-center gap-0.5 ${flex}`}>
                 <button
+                    type="button"
                     onClick={() => onSort(sortKey)}
                     className="inline-flex cursor-pointer items-center gap-1 transition-colors hover:text-foreground"
                 >
                     {children}
-                    <Icon className="size-3.5 shrink-0" />
+                    <Icon className="size-3.5 shrink-0" aria-hidden />
                 </button>
                 {extra}
             </span>
@@ -106,9 +113,12 @@ export function RiskPriorityTable({ assessments, year }: Props) {
                 aVal = LEVEL_ORDER[a.level];
                 bVal = LEVEL_ORDER[b.level];
             } else if (sortKey === 'recentTrendPct') {
-                // null(데이터 부족)은 항상 정렬 후미로
-                aVal = a.recentTrendPct ?? -Infinity;
-                bVal = b.recentTrendPct ?? -Infinity;
+                // null은 방향과 무관하게 항상 정렬 후미로 (-Infinity 치환 시 NaN 연산 발생)
+                if (a.recentTrendPct === null && b.recentTrendPct === null) return 0;
+                if (a.recentTrendPct === null) return 1;
+                if (b.recentTrendPct === null) return -1;
+                aVal = a.recentTrendPct;
+                bVal = b.recentTrendPct;
             } else {
                 aVal = a[sortKey];
                 bVal = b[sortKey];
@@ -193,13 +203,13 @@ export function RiskPriorityTable({ assessments, year }: Props) {
                             >
                                 최근 추세
                             </SortableHead>
-                            <TableHead className="py-3 pr-4 text-center text-muted-foreground">
+                            <TableHead scope="col" className="py-3 pr-4 text-center text-muted-foreground">
                                 <span className="inline-flex items-center gap-0.5">
                                     주요 Scope
                                     <InfoTooltip content="Scope 3(공급망·운송·출장)은 자사가 직접 통제할 수 없는 배출이라 감축 난이도가 가장 높습니다. 리스크 점수의 Scope 구성 항목(20점)은 Scope 3 비중이 높을수록 높게 산정됩니다." />
                                 </span>
                             </TableHead>
-                            <TableHead className="py-3 text-muted-foreground">주요 정보</TableHead>
+                            <TableHead scope="col" className="py-3 text-muted-foreground">주요 정보</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
