@@ -11,11 +11,11 @@ import { formatCompanyName, formatEmissions, formatKilo, formatMonthShort, forma
 import type { CompanyTotal, MonthlyTotal } from '@/lib/emissions';
 import { useRouter } from 'next/navigation';
 import {
+    Area,
+    AreaChart,
     Bar,
     BarChart,
     CartesianGrid,
-    Line,
-    LineChart,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -42,7 +42,7 @@ export function SourceDrilldown({ sourceId, scope, color: colorProp, companyBrea
     return (
         <Card>
             <CardHeading
-                title={<><span style={{ color }}>{label}</span> 상세 분석</>}
+                title={<span><span style={{ color }}>{label}</span> 상세 분석</span>}
                 tooltip="위 배출원 랭킹 차트에서 항목을 클릭하면 해당 배출원의 상세 분석을 확인할 수 있습니다. 전체 탭의 막대, 또는 Scope별 탭의 도넛 슬라이스와 목록 항목을 클릭하세요."
                 description={`${year}년 · 회사별 배출량 및 월별 추이`}
             />
@@ -105,7 +105,7 @@ export function SourceDrilldown({ sourceId, scope, color: colorProp, companyBrea
                     <div>
                         <p className="mb-3 text-sm font-medium">월별 추이</p>
                         <ResponsiveContainer width="100%" height={Math.max(160, chartHeight)}>
-                            <LineChart
+                            <AreaChart
                                 data={monthlyTrend}
                                 margin={{ top: 4, right: 16, left: 0, bottom: 4 }}
                             >
@@ -125,16 +125,18 @@ export function SourceDrilldown({ sourceId, scope, color: colorProp, companyBrea
                                     formatter={formatTooltipValue}
                                     contentStyle={CHART_TOOLTIP_STYLE}
                                 />
-                                <Line
+                                <Area
                                     type="monotone"
                                     dataKey="total"
                                     name={label}
                                     stroke={color}
+                                    fill={color}
+                                    fillOpacity={0.15}
                                     strokeWidth={2.5}
                                     dot={false}
                                     activeDot={{ r: 4 }}
                                 />
-                            </LineChart>
+                            </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>

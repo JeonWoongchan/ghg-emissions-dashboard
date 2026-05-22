@@ -15,6 +15,8 @@ import { X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import {
+    Area,
+    AreaChart,
     CartesianGrid,
     Legend,
     Line,
@@ -37,7 +39,7 @@ type Props = {
 };
 
 // 공통 차트 축/그리드 설정
-function ChartAxes() {
+function ChartAxes({ yDomain }: { yDomain?: [number, (dataMax: number) => number] }) {
     return (
         <>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -48,7 +50,13 @@ function ChartAxes() {
                 axisLine={false}
                 tickLine={false}
             />
-            <YAxis tick={CHART_AXIS_STYLE} axisLine={false} tickLine={false} width={44} />
+            <YAxis
+                tick={CHART_AXIS_STYLE}
+                axisLine={false}
+                tickLine={false}
+                width={44}
+                domain={yDomain}
+            />
             <Tooltip
                 labelFormatter={(label) => (typeof label === 'string' ? formatYearMonth(label) : '')}
                 formatter={formatTooltipValue}
@@ -132,18 +140,21 @@ function AggregateTab({ data, companies }: { data: Props['data']; companies: Com
             </div>
 
             <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>
-                    <ChartAxes />
-                    {/* 항상 표시: 전체 합산 */}
-                    <Line
+                {/* Y축 최댓값을 실제 최대의 2배로 지정 — 차트가 하단 절반에 표시되어 여백감 확보 */}
+                <AreaChart data={data} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>
+                    <ChartAxes yDomain={[0, (dataMax) => dataMax * 2]} />
+                    {/* 항상 표시: 전체 합산 에어리어 */}
+                    <Area
                         type="monotone"
                         dataKey={TOTAL_EMISSIONS_KEY}
                         stroke={CHART_COLORS[0]}
+                        fill={CHART_COLORS[0]}
+                        fillOpacity={0.15}
                         strokeWidth={2.5}
                         dot={false}
                         activeDot={{ r: 4 }}
                     />
-                    {/* 선택된 회사 오버레이 — 점선으로 합산과 구분 */}
+                    {/* 선택된 회사 오버레이 — 점선 라인으로 에어리어 위에 표시 */}
                     {selectedCompanies.map((company, i) => (
                         <Line
                             key={company.id}
@@ -156,7 +167,7 @@ function AggregateTab({ data, companies }: { data: Props['data']; companies: Com
                             activeDot={{ r: 4 }}
                         />
                     ))}
-                </LineChart>
+                </AreaChart>
             </ResponsiveContainer>
         </div>
     );
@@ -230,7 +241,7 @@ export function EmissionTrendChart({ data, companies, year }: Props) {
         <Card>
             <CardHeading
                 title="월간 배출량 추이"
-                tooltip={'전체 기업 합산 또는 기업별 월간 배출량을 선 차트로 표시합니다.\n\n전체 합산 탭: 합산 추이 위에 특정 기업을 최대 5개까지 오버레이 비교할 수 있습니다.\n\n회사별 비교 탭: 원하는 기업만 선택해 라인 차트로 비교합니다.'}
+                tooltip={'전체 기업 합산 또는 기업별 월간 배출량을 차트로 표시합니다.\n\n전체 합산 탭: 합산 추이를 에어리어 차트로 표시하며, 특정 기업을 최대 5개까지 점선으로 오버레이 비교할 수 있습니다.\n\n회사별 비교 탭: 원하는 기업만 선택해 라인 차트로 비교합니다.'}
                 description={`${year}년 월간 온실가스 배출량 (tCO₂e)`}
             />
             <CardContent>
