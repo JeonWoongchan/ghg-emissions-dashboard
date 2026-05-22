@@ -1,22 +1,15 @@
 import type { Company, Country, Post } from '@/types';
-import { companies as seedCompanies, countries as seedCountries } from './data';
-
-// 모듈 스코프 in-memory 상태 — 서버 재시작 전까지 유지
-const _countries: Country[] = [...seedCountries];
-const _companies: Company[] = [...seedCompanies];
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-// 200~800ms 사이의 랜덤 지연
-const jitter = () => 200 + Math.random() * 600;
 
 export async function fetchCountries(): Promise<Country[]> {
-    await delay(jitter());
-    return _countries;
+    const res = await fetch('/api/countries');
+    if (!res.ok) throw new Error('국가 목록을 불러오지 못했습니다.');
+    return res.json() as Promise<Country[]>;
 }
 
 export async function fetchCompanies(): Promise<Company[]> {
-    await delay(jitter());
-    return _companies;
+    const res = await fetch('/api/companies');
+    if (!res.ok) throw new Error('회사 목록을 불러오지 못했습니다.');
+    return res.json() as Promise<Company[]>;
 }
 
 // posts는 Route Handler(/api/posts)를 통해 Postgres에서 관리

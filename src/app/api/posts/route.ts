@@ -15,18 +15,16 @@ function rowToPost(row: Record<string, unknown>): Post {
 }
 
 export async function GET() {
-  return NextResponse.json({ error: '게시글을 불러오지 못했습니다.' }, { status: 500 });
-
-    // try {
-    //     const rows = await sql`
-    //         SELECT id, title, resource_uid, date_time, content, author
-    //         FROM posts
-    //         ORDER BY created_at DESC
-    //     `;
-    //     return NextResponse.json(rows.map(rowToPost));
-    // } catch {
-    //     return NextResponse.json({ error: '게시글을 불러오지 못했습니다.' }, { status: 500 });
-    // }
+    try {
+        const rows = await sql`
+            SELECT id, title, resource_uid, date_time, content, author
+            FROM posts
+            ORDER BY created_at DESC
+        `;
+        return NextResponse.json(rows.map(rowToPost));
+    } catch {
+        return NextResponse.json({ error: '게시글을 불러오지 못했습니다.' }, { status: 500 });
+    }
 }
 
 export async function POST(request: Request) {
