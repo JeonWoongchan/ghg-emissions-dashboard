@@ -1,11 +1,16 @@
 // 대시보드 상단 KPI 요약 카드 4종 렌더링
 
+import { InfoTooltip } from '@/components/shared/info-tooltip';
 import { MetricCard } from '@/components/shared/metric-card';
+import { ScopeStackedBar } from '@/components/shared/scope-stacked-bar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SCOPES } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
 import type { MonthlyTotal } from '@/lib/emissions';
-import type { RiskSummary } from '@/lib/risk';
 import { formatEmissions, formatKrw, formatYearMonth, getTrendProps } from '@/lib/format';
+import type { RiskSummary } from '@/lib/risk';
 import { Banknote } from 'lucide-react';
+import Link from 'next/link';
 
 // 연간 총 배출량 + 전년 대비 변화율 카드
 function AnnualEmissionsCard({
@@ -68,28 +73,26 @@ function MonthlyEmissionsCard({
     );
 }
 
-// 감소 추세 회사 카드 — 개선 기업 수 초록색 강조
-function ImprovingCompaniesCard({
-    count,
-    total,
-    year,
-}: {
-    count: number;
-    total: number;
-    year: number;
-}) {
+// Scope별 배출 구성 카드 — 가로 스택 바로 비율 표시, 배출원 분석 진입점
+function ScopeBreakdownCard({ scopeTotals }: { scopeTotals: Record<1 | 2 | 3, number> }) {
+    const total = scopeTotals[1] + scopeTotals[2] + scopeTotals[3];
+    const pct = (s: 1 | 2 | 3) => (total > 0 ? (scopeTotals[s] / total) * 100 : 0);
+    const scopeBarItems = SCOPES.map((s) => ({ scope: s, pct: pct(s) }));
+
     return (
-        <MetricCard
-            title="감소 추세 회사"
-            tooltip="최근 3개월 평균 배출량이 직전 3개월 평균보다 감소한 회사 수입니다. 리스크 페이지의 최근 추세와 동일한 기준으로, 지금 이 순간의 배출 모멘텀을 나타냅니다."
-            value={
-                <>
-                    <span className="text-success">{count}</span>
-                    <span className="text-muted-foreground"> / {total}</span>
-                </>
-            }
-            helper={`${year}년 배출량 감소 기업`}
-        />
+        <Link href={ROUTES.sources} className="block">
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+                <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
+                        Scope별 배출 구성
+                        <InfoTooltip content="관리 대상 전체의 Scope 1(직접 배출) · Scope 2(전기·열) · Scope 3(가치사슬) 비율입니다. 배출원 분석 페이지에서 배출원별 상세 현황을 확인할 수 있습니다." />
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="h-13">
+                    <ScopeStackedBar scopes={scopeBarItems} isKpiCard={true}/>
+                </CardContent>
+            </Card>
+        </Link>
     );
 }
 
@@ -111,16 +114,14 @@ function TaxExposureCard({ summary }: { summary: RiskSummary }) {
 type Props = {
     year: number;
     monthlyTotals: MonthlyTotal[];
-    momChange: number | null;
     momYoyChange: number | null;
-    improvingCount: number;
-    totalCompanies: number;
+    scopeTotals: Record<1 | 2 | 3, number>;
     yoyChange: number | null;
     riskSummary: RiskSummary;
 };
 
 // KPI 카드 4종 조합 렌더링
-export function KpiCards({ year, monthlyTotals, momYoyChange, improvingCount, totalCompanies, yoyChange, riskSummary }: Props) {
+export function KpiCards({ year, monthlyTotals, momYoyChange, scopeTotals, yoyChange, riskSummary }: Props) {
     const annualTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0);
     const latestMonth = monthlyTotals[monthlyTotals.length - 1];
 
@@ -128,7 +129,7 @@ export function KpiCards({ year, monthlyTotals, momYoyChange, improvingCount, to
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <AnnualEmissionsCard total={annualTotal} year={year} yoyChange={yoyChange} />
             <MonthlyEmissionsCard latest={latestMonth} momYoyChange={momYoyChange} />
-            <ImprovingCompaniesCard count={improvingCount} total={totalCompanies} year={year} />
+            <ScopeBreakdownCard scopeTotals={scopeTotals} />
             <TaxExposureCard summary={riskSummary} />
         </div>
     );

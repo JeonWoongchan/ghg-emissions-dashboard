@@ -14,6 +14,8 @@ export const SCOPE_MAP: Record<string, 1 | 2 | 3> = {
   waste: 3,
 };
 
+export const SCOPES = [1, 2, 3] as const;
+
 export const SCOPE_LABELS: Record<1 | 2 | 3, string> = {
   1: 'Scope 1',
   2: 'Scope 2',

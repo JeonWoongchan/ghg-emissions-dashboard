@@ -1,8 +1,8 @@
 // 회사 카드 — 연간 배출량 및 GHG Scope 비중 시각화
 
 import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
+import { ScopeStackedBar } from '@/components/shared/scope-stacked-bar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { SCOPE_COLORS } from '@/constants/ghg-scope';
 import { ROUTES } from '@/constants/navigation';
 import { getScopeBreakdown } from '@/lib/emissions';
 import { formatEmissions } from '@/lib/format';
@@ -55,36 +55,7 @@ export function CompanyCard({
                     </div>
 
                     {/* GHG Scope 비중 스택 바 */}
-                    <div className="space-y-1.5">
-                        <div className="flex h-2 overflow-hidden rounded-full bg-muted">
-                            {scopes.map(({ scope, pct }) => (
-                                <div
-                                    key={scope}
-                                    style={{
-                                        width: `${pct}%`,
-                                        backgroundColor: SCOPE_COLORS[scope],
-                                    }}
-                                />
-                            ))}
-                        </div>
-                        {/* Scope 레이블 — 색상 점으로 바와 연동, 고정 크기로 가독성 확보 */}
-                        <div className="flex flex-wrap gap-x-3 gap-y-1">
-                            {scopes.map(({ scope, pct }) =>
-                                pct > 0 ? (
-                                    <span
-                                        key={scope}
-                                        className="flex items-center gap-1 text-xs text-muted-foreground"
-                                    >
-                                        <span
-                                            className="size-2 shrink-0 rounded-sm"
-                                            style={{ backgroundColor: SCOPE_COLORS[scope] }}
-                                        />
-                                        S{scope} {Math.round(pct)}%
-                                    </span>
-                                ) : null
-                            )}
-                        </div>
-                    </div>
+                    <ScopeStackedBar scopes={scopes} showBackground />
                 </CardContent>
             </Card>
         </Link>
