@@ -116,9 +116,7 @@ export function ExcelImportDialog({ open, onOpenChangeAction }: Props) {
 
     const handleFileSelect = useCallback(
         (f: File) => {
-            const isAllowed = ALLOWED_EXTENSIONS.some((ext) =>
-                f.name.toLowerCase().endsWith(ext)
-            );
+            const isAllowed = ALLOWED_EXTENSIONS.some((ext) => f.name.toLowerCase().endsWith(ext));
             if (!isAllowed) {
                 setPreviewError('.xlsx 또는 .xls 파일만 업로드할 수 있습니다.');
                 return;
@@ -285,7 +283,9 @@ export function ExcelImportDialog({ open, onOpenChangeAction }: Props) {
                                                 <TableCell className="text-right text-xs">
                                                     {row.quantity.toLocaleString()}
                                                 </TableCell>
-                                                <TableCell className="text-xs">{row.unit}</TableCell>
+                                                <TableCell className="text-xs">
+                                                    {row.unit}
+                                                </TableCell>
                                                 <TableCell className="text-right font-mono text-xs">
                                                     {row.emissions.toFixed(4)}
                                                     <span className="text-muted-foreground ml-1">

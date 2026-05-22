@@ -10,4 +10,8 @@ export const queryKeys = {
         all: ['posts'] as const,
         byCompany: (companyId: string) => ['posts', 'company', companyId] as const,
     },
+    activityRecords: {
+        all: ['activityRecords'] as const,
+        byCompany: (companyId: string) => ['activityRecords', 'company', companyId] as const,
+    },
 } as const;

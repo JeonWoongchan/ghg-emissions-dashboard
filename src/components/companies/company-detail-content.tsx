@@ -26,6 +26,7 @@ import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
 import dynamic from 'next/dynamic';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useMemo } from 'react';
+import { ActivityRecordsTable } from '@/components/activity/activity-records-table';
 import { CompanyReductionScenario } from './company-reduction-scenario';
 import { CompanyRiskCard } from './company-risk-card';
 
@@ -131,6 +132,8 @@ export function CompanyDetailContent({ id }: { id: string }) {
             {riskAssessment && (
                 <CompanyRiskCard assessment={riskAssessment} rank={riskRank} total={riskTotal} />
             )}
+
+            <ActivityRecordsTable companyId={company.id} />
 
             {/* Scope별 감축 시나리오 */}
             <CompanyReductionScenario

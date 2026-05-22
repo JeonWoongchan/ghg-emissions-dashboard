@@ -38,6 +38,9 @@ export function useExcelImport(onSuccess?: () => void) {
         mutationFn: importExcel,
         onSuccess: (data) => {
             void queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
+            void queryClient.invalidateQueries({
+                queryKey: queryKeys.activityRecords.byCompany(data.companyId),
+            });
             toast.success(`${data.inserted}건 임포트 완료`);
             onSuccess?.();
         },
