@@ -1,6 +1,6 @@
 import { sql } from '@/lib/db';
 import { rowToPost } from '@/lib/db-mappers';
-import { apiError } from '@/lib/server/api-response';
+import { apiError, shouldFail, simulateDelay } from '@/lib/server/api-response';
 import type { Post } from '@/types';
 import { NextResponse } from 'next/server';
 
@@ -19,9 +19,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        // 과제 초기 구현사항에 맞게 15% 확률로 의도적으로 실패하도록 구현
-        if (Math.random() < 0.15)
-            return apiError('저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        // 과제 스펙: 쓰기 요청 200~800ms 지연 + 15% 실패 시뮬레이션
+        await simulateDelay();
+        if (shouldFail()) return apiError('저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');
 
         const { title, resourceUid, dateTime, content, author } = (await request.json()) as Post;
         const [row] = await sql`

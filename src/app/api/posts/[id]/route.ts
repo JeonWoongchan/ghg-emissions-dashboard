@@ -1,11 +1,14 @@
 import { sql } from '@/lib/db';
 import { rowToPost } from '@/lib/db-mappers';
-import { apiError } from '@/lib/server/api-response';
+import { apiError, shouldFail, simulateDelay } from '@/lib/server/api-response';
 import type { Post } from '@/types';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        // 과제 스펙: 쓰기 요청 200~800ms 지연 + 15% 실패 시뮬레이션
+        await simulateDelay();
+        if (shouldFail()) return apiError('저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');
         const { id } = await params;
         const { title, resourceUid, dateTime, content, author } = (await request.json()) as Post;
         const [row] = await sql`
@@ -24,6 +27,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        // 과제 스펙: 쓰기 요청 200~800ms 지연 시뮬레이션
+        await simulateDelay();
         const { id } = await params;
         await sql`DELETE FROM posts WHERE id = ${id}`;
         return new NextResponse(null, { status: 204 });
