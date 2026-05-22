@@ -141,6 +141,32 @@ export function getPcfMonthlyByCompany(
     });
 }
 
+export function getPcfMonthlyByScope(records: ActivityRecord[]): Record<string, number | string>[] {
+    const months = [...new Set(records.map((record) => record.yearMonth))].sort();
+
+    return months.map((month) => {
+        const monthRecords = records.filter((record) => record.yearMonth === month);
+        return {
+            month,
+            'Scope 1': roundPcf(
+                monthRecords
+                    .filter((record) => record.scope === 1)
+                    .reduce((sum, record) => sum + getActivityRecordEmissionsKg(record), 0)
+            ),
+            'Scope 2': roundPcf(
+                monthRecords
+                    .filter((record) => record.scope === 2)
+                    .reduce((sum, record) => sum + getActivityRecordEmissionsKg(record), 0)
+            ),
+            'Scope 3': roundPcf(
+                monthRecords
+                    .filter((record) => record.scope === 3)
+                    .reduce((sum, record) => sum + getActivityRecordEmissionsKg(record), 0)
+            ),
+        };
+    });
+}
+
 export function getPcfYoyChange(
     allRecords: ActivityRecord[],
     monthlyTotals: MonthlyTotal[]

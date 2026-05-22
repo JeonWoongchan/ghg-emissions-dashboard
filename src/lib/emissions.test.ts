@@ -18,6 +18,7 @@ import {
     getPcfAnnualTotals,
     getPcfByCompany,
     getPcfMomYoyChange,
+    getPcfMonthlyByScope,
     getPcfMonthlyTotals,
     getPcfScopeBreakdown,
     getPcfScopeTotals,
@@ -258,6 +259,10 @@ describe('emissions utilities', () => {
         expect(getPcfMonthlyTotals(records2024)).toEqual([
             { month: '2024-01', total: 206.2 },
             { month: '2024-02', total: 35 },
+        ]);
+        expect(getPcfMonthlyByScope(records2024)).toEqual([
+            { month: '2024-01', 'Scope 1': 0, 'Scope 2': 91.2, 'Scope 3': 115 },
+            { month: '2024-02', 'Scope 1': 0, 'Scope 2': 0, 'Scope 3': 35 },
         ]);
         expect(getPcfAnnualTotals(activityRecordsFixture)).toEqual([
             { year: 2023, total: 45.6 },

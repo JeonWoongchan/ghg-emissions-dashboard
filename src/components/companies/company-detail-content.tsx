@@ -1,14 +1,19 @@
 'use client';
 
-// 회사 상세 데이터 패칭 및 차트 레이아웃 구성
-
-import { ChartSkeleton, ListSkeleton } from '@/components/shared/loading-skeletons';
+import { ActivityRecordsTable } from '@/components/activity/activity-records-table';
+import { CompanyReductionScenario } from '@/components/companies/company-reduction-scenario';
+import { CompanyRiskCard } from '@/components/companies/company-risk-card';
+import { ActionNotesPanel } from '@/components/posts/action-notes-panel';
+import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
 import { ErrorState } from '@/components/shared/error-state';
+import { ChartSkeleton, ListSkeleton } from '@/components/shared/loading-skeletons';
+import { MetricYearlyComparisonChart } from '@/components/shared/metric-yearly-comparison-chart';
 import { YearSelector } from '@/components/shared/year-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { COUNTRY_FLAGS } from '@/constants/countries';
 import { useActivityRecords } from '@/hooks/activity-records/useActivityRecords';
 import { useCompany } from '@/hooks/companies/useCompanies';
+import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
 import {
     filterActivityRecordsByYear,
     filterByYear,
@@ -17,36 +22,24 @@ import {
     getAvailableYears,
     getCombinedAvailableYears,
     getMonthlyByScope,
+    getPcfAnnualTotals,
+    getPcfMonthlyByScope,
     getScopeBreakdown,
-    getSelectedYear,
     getScopeTotals,
+    getSelectedYear,
     getTotalBySource,
     sumEmissions,
     sumPcf,
 } from '@/lib/emissions';
 import { formatEmissions, formatPcfEmissions } from '@/lib/format';
-import { ActionNotesPanel } from '@/components/posts/action-notes-panel';
-import { RiskLevelBadge } from '@/components/risk/risk-level-badge';
-import { useCompanyRisk } from '@/hooks/risk/useCompanyRisk';
+import type { ActivityRecord, Company } from '@/types';
 import dynamic from 'next/dynamic';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useMemo } from 'react';
-import { ActivityRecordsTable } from '@/components/activity/activity-records-table';
-import type { ActivityRecord, Company } from '@/types';
-import { CompanyReductionScenario } from './company-reduction-scenario';
-import { CompanyRiskCard } from './company-risk-card';
 
-// recharts 번들을 초기 JS에서 분리하기 위한 동적 임포트
 const CompanyMonthlyChart = dynamic(
     () => import('./company-monthly-chart').then((m) => ({ default: m.CompanyMonthlyChart })),
     { loading: () => <ChartSkeleton className="h-70" />, ssr: false }
-);
-const YearlyComparisonChart = dynamic(
-    () =>
-        import('@/components/shared/yearly-comparison-chart').then((m) => ({
-            default: m.YearlyComparisonChart,
-        })),
-    { loading: () => <ChartSkeleton className="h-[200px]" />, ssr: false }
 );
 const CompanyScopeChart = dynamic(
     () => import('./company-scope-chart').then((m) => ({ default: m.CompanyScopeChart })),
@@ -57,7 +50,6 @@ const CompanySourceChart = dynamic(
     { loading: () => <ChartSkeleton className="h-65" />, ssr: false }
 );
 
-// 회사 상세 로딩 중 스켈레톤
 function CompanyDetailSkeleton() {
     return (
         <div className="space-y-6">
@@ -91,14 +83,15 @@ function getCompanyDetailMetrics(
         annualPcfTotal: sumPcf(filteredActivityRecords),
         pcfRecordCount: filteredActivityRecords.length,
         monthlyByScope: getMonthlyByScope(filteredEmissions),
+        monthlyPcfByScope: getPcfMonthlyByScope(filteredActivityRecords),
         scopes: getScopeBreakdown(filteredEmissions),
         totalBySource: getTotalBySource(filteredEmissions),
         scopeEmissions: getScopeTotals(filteredEmissions),
         yearlyTotals: getAnnualTotals(company.emissions),
+        pcfYearlyTotals: getPcfAnnualTotals(activityRecords),
     };
 }
 
-// 회사 상세 컨텐츠 렌더링
 export function CompanyDetailContent({ id }: { id: string }) {
     const { data: company, isLoading, error, refetch } = useCompany(id);
     const {
@@ -118,7 +111,6 @@ export function CompanyDetailContent({ id }: { id: string }) {
         [activityRecords, company]
     );
     const selectedYear = getSelectedYear(yearParam, availableYears);
-    // Rules of Hooks: 조건부 반환 전에 호출 — company 미로드 시 null 반환
     const {
         assessment: riskAssessment,
         rank: riskRank,
@@ -144,7 +136,6 @@ export function CompanyDetailContent({ id }: { id: string }) {
 
     return (
         <div className="space-y-6">
-            {/* 회사 헤더 */}
             <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-3">
@@ -175,33 +166,38 @@ export function CompanyDetailContent({ id }: { id: string }) {
                 />
             </div>
 
-            {/* 리스크 분석 카드 — 등급·노출액·추세·사유 통합 */}
             {riskAssessment && (
                 <CompanyRiskCard assessment={riskAssessment} rank={riskRank} total={riskTotal} />
             )}
 
             <ActivityRecordsTable companyId={company.id} />
 
-            {/* Scope별 감축 시나리오 */}
-            <CompanyReductionScenario
-                scopeEmissions={metrics.scopeEmissions}
-                totalEmissions={metrics.annualGhgTotal}
+            <CompanyMonthlyChart
+                emissionsData={metrics.monthlyByScope}
+                pcfData={metrics.monthlyPcfByScope}
                 year={selectedYear}
             />
 
-            {/* 월별 Scope 스택 에어리어 차트 */}
-            <CompanyMonthlyChart data={metrics.monthlyByScope} year={selectedYear} />
-
-            {/* 연도별 배출량 비교 차트 */}
-            <YearlyComparisonChart
-                data={metrics.yearlyTotals}
+            <MetricYearlyComparisonChart
+                emissionsData={metrics.yearlyTotals}
+                pcfData={metrics.pcfYearlyTotals}
                 selectedYear={selectedYear}
-                title="연도별 배출량 추이"
-                description={`${company.name} · 연도별 누적 온실가스 배출량 (tCO₂e)`}
-                helpText="해당 기업의 연도별 배출량 추이를 막대 그래프로 표시합니다. 강조 표시된 막대가 현재 선택된 연도이며, 상단 연도 선택기로 변경할 수 있습니다."
+                pcfText={{
+                    title: '연도별 PCF 추이',
+                    description: `${company.name} · 연도별 원본 활동 데이터 기반 PCF (kgCO₂e)`,
+                    helpText:
+                        '해당 회사의 연도별 PCF 산정값 추이입니다. 제품 생산량 보정 없이 업로드된 활동 데이터 기준 합산값입니다.',
+                    valueLabel: '총 PCF',
+                }}
+                emissionsText={{
+                    title: '연도별 배출량 추이',
+                    description: `${company.name} · 연도별 누적 온실가스 배출량 (tCO₂e)`,
+                    helpText:
+                        '해당 회사의 연도별 배출량 추이입니다. 강조 표시된 막대가 현재 선택한 연도입니다.',
+                    valueLabel: '총 배출량',
+                }}
             />
 
-            {/* Scope 비중 + 배출원별 차트 */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <CompanyScopeChart
                     scopes={metrics.scopes}
@@ -210,7 +206,12 @@ export function CompanyDetailContent({ id }: { id: string }) {
                 <CompanySourceChart sources={metrics.totalBySource} year={selectedYear} />
             </div>
 
-            {/* Action Notes 플로팅 채팅 패널 */}
+            <CompanyReductionScenario
+              scopeEmissions={metrics.scopeEmissions}
+              totalEmissions={metrics.annualGhgTotal}
+              year={selectedYear}
+            />
+
             <ActionNotesPanel companyId={company.id} />
         </div>
     );
