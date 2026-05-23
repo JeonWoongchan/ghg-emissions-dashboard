@@ -40,9 +40,9 @@ const KPI_MODE_CONFIG = {
         annualTitle: '연간 총 PCF',
         monthlyTitle: '최근 월 PCF',
         annualTooltip:
-            '선택한 연도에 업로드된 원본 활동 데이터의 PCF 산정 배출량 합산입니다. 변화율은 전년 같은 기간 대비 증감률입니다.',
+            '선택한 연도에 업로드된 원본 활동 데이터의 PCF 산정값 합산입니다. 변화율은 전년 같은 기간 대비 증감률입니다.',
         monthlyTooltip:
-            '선택한 연도에 업로드된 원본 활동 데이터 중 마지막 월의 PCF 산정 배출량입니다. 변화율은 전년 동월 대비 증감률입니다.',
+            '선택한 연도에 업로드된 원본 활동 데이터 중 마지막 월의 PCF 산정값입니다. 변화율은 전년 동월 대비 증감률입니다.',
         noDataLabel: 'PCF 데이터 없음',
         annualBaseLabel: '활동 데이터 기준',
         unit: PCF_EMISSIONS_UNIT,

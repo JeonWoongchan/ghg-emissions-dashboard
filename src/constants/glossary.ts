@@ -10,7 +10,7 @@ export const SIDEBAR_GLOSSARY_TERMS: GlossaryTerm[] = [
         term: 'PCF',
         title: 'Product Carbon Footprint',
         description:
-            '제품 또는 활동 단위에서 발생한 탄소발자국을 kgCO₂e 기준으로 보는 지표입니다.',
+            '제품 탄소발자국 개념을 과제 Excel 활동 데이터 범위에서 단순화해 kgCO₂e 기준으로 산정한 값입니다.',
         method:
             '이 서비스에서는 Excel 업로드 활동 데이터의 배출량 스냅샷(activity_records.emissions_kg)을 합산합니다. 생산량으로 나눈 제품 단위 효율값은 아닙니다.',
     },
