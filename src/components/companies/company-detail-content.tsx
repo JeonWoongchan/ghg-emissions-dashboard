@@ -191,7 +191,7 @@ export function CompanyDetailContent({ id }: { id: string }) {
                     />
                 )}
 
-                <ActivityRecordsTable companyId={company.id} />
+                <ActivityRecordsTable companyId={company.id} year={selectedYear} />
 
                 <CompanyMonthlyChart
                     emissionsData={metrics.monthlyByScope}

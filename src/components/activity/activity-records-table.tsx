@@ -25,6 +25,7 @@ import {
     type SortComparators,
 } from '@/hooks/shared/useSort';
 import { useActivityRecords } from '@/hooks/activity-records/useActivityRecords';
+import { filterActivityRecordsByYear } from '@/lib/emissions';
 import type { ActivityRecord } from '@/types';
 
 type SortKey = 'activityDate' | 'activityType' | 'emissionsKg';
@@ -65,20 +66,28 @@ function TableSkeleton() {
     );
 }
 
-type Props = { companyId: string };
+type Props = {
+    companyId: string;
+    year?: number;
+};
 
-export function ActivityRecordsTable({ companyId }: Props) {
+export function ActivityRecordsTable({ companyId, year }: Props) {
     const { data: records, isLoading, error, refetch } = useActivityRecords(companyId);
     const sort = useSort<SortKey>({ initialKey: 'activityDate', initialDirection: 'desc' });
+
+    const filteredRecords = useMemo(
+        () => (year ? filterActivityRecordsByYear(records ?? [], year) : (records ?? [])),
+        [records, year]
+    );
 
     const sorted = useMemo(
         () =>
             sortByState(
-                records ?? [],
+                filteredRecords,
                 { sortKey: sort.sortKey, sortDir: sort.sortDir },
                 SORT_COMPARATORS
             ),
-        [records, sort.sortKey, sort.sortDir]
+        [filteredRecords, sort.sortKey, sort.sortDir]
     );
     const shouldUseInternalScroll = sorted.length > INTERNAL_SCROLL_ROW_THRESHOLD;
     const tableContainerClassName = shouldUseInternalScroll
