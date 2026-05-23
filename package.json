@@ -2,6 +2,7 @@
     "name": "hanaloop-pcf-dashboard",
     "version": "0.1.0",
     "private": true,
+    "packageManager": "pnpm@10.28.2",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
@@ -10,7 +11,11 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test": "vitest",
-        "test:run": "vitest run"
+        "test:run": "vitest run",
+        "docker:build": "docker compose build",
+        "docker:up": "docker compose up --build",
+        "docker:up:detached": "docker compose up --build -d",
+        "docker:down": "docker compose down"
     },
     "dependencies": {
         "@tanstack/react-query": "^5.100.11",
