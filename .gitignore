@@ -19,7 +19,11 @@
 /out/
 
 # docs
-/docs
+#/docs/*
+#!/docs/*.md
+#!/docs/*.sql
+#!/docs/images/
+#!/docs/images/*.png
 
 # production
 /build
@@ -42,6 +46,7 @@ yarn-error.log*
 # ── 개발자 전용 파일 (공개 레포에 올라가면 안 되는 것들) ──────────────────────
 # 디자인 시스템 내부 문서
 DESIGN.md
+!/docs/DESIGN.md
 # Claude Code AI 어시스턴트 설정 — 로컬 머신 경로 포함
 .claude/
 # Claude Code 에이전트 스킬 파일
@@ -55,3 +60,6 @@ CLAUDE.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# personal notes
+ /notes/*
