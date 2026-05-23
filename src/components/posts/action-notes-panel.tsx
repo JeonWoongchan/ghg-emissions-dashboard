@@ -16,6 +16,10 @@ import { CompactState } from '@/components/shared/compact-state';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+    ACTION_NOTE_AUTHOR_MAX_LENGTH,
+    ACTION_NOTE_CONTENT_MAX_LENGTH,
+} from '@/constants/posts';
 import { useActionNotes } from '@/hooks/posts/useActionNotes';
 import { formatDateTime } from '@/lib/format';
 import { Check, MessageCircle, Pencil, Send, Trash2, X } from 'lucide-react';
@@ -24,17 +28,49 @@ type Props = {
     companyId: string;
 };
 
+type FieldErrorMessageProps = {
+    id: string;
+    message?: string | null;
+};
+
+function getErrorFieldProps(message: string | null | undefined, errorId: string) {
+    return {
+        'aria-invalid': Boolean(message),
+        'aria-describedby': message ? errorId : undefined,
+    };
+}
+
+function FieldErrorMessage({ id, message }: FieldErrorMessageProps) {
+    if (!message) {
+        return null;
+    }
+
+    return (
+        <p id={id} className="text-destructive text-xs">
+            {message}
+        </p>
+    );
+}
+
+function CharacterCount({ current, max }: { current: number; max: number }) {
+    return (
+        <span className="text-muted-foreground ml-auto text-xs tabular-nums">
+            {current}/{max}
+        </span>
+    );
+}
+
 export function ActionNotesPanel({ companyId }: Props) {
     const {
         open,
         setOpen,
         content,
-        setContent,
+        newNoteErrors,
         author,
         deletingId,
         setDeletingId,
         editingState,
-        setEditingState,
+        editContentError,
         posts,
         isLoading,
         error,
@@ -45,14 +81,19 @@ export function ActionNotesPanel({ companyId }: Props) {
         isDeleting,
         bottomRef,
         handleAuthorChange,
+        handleContentChange,
         handleSend,
         startEdit,
         cancelEdit,
+        handleEditContentChange,
         handleSaveEdit,
         confirmDelete,
         handleNewKeyDown,
         handleEditKeyDown,
     } = useActionNotes(companyId);
+
+    const authorErrorId = 'action-note-author-error';
+    const contentErrorId = 'action-note-content-error';
 
     return (
         <>
@@ -130,6 +171,7 @@ export function ActionNotesPanel({ companyId }: Props) {
                         )}
                         {sortedPosts.map((post) => {
                             const isEditing = editingState?.id === post.id;
+                            const editContentErrorId = `action-note-edit-error-${post.id}`;
                             return (
                                 <div
                                     key={post.id}
@@ -171,19 +213,28 @@ export function ActionNotesPanel({ companyId }: Props) {
                                             <Textarea
                                                 value={editingState.content}
                                                 onChange={(e) =>
-                                                    setEditingState((prev) =>
-                                                        prev
-                                                            ? { ...prev, content: e.target.value }
-                                                            : null
-                                                    )
+                                                    handleEditContentChange(e.target.value)
                                                 }
                                                 onKeyDown={handleEditKeyDown}
                                                 rows={3}
-                                                className="resize-none text-sm"
+                                                maxLength={ACTION_NOTE_CONTENT_MAX_LENGTH}
+                                                className="field-sizing-fixed h-24 max-h-24 resize-none overflow-y-auto text-sm"
                                                 disabled={isUpdating}
+                                                {...getErrorFieldProps(
+                                                    editContentError,
+                                                    editContentErrorId,
+                                                )}
                                                 autoFocus
                                             />
+                                            <FieldErrorMessage
+                                                id={editContentErrorId}
+                                                message={editContentError}
+                                            />
                                             <div className="flex justify-end gap-1.5">
+                                                <CharacterCount
+                                                    current={editingState.content.length}
+                                                    max={ACTION_NOTE_CONTENT_MAX_LENGTH}
+                                                />
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
@@ -198,7 +249,10 @@ export function ActionNotesPanel({ companyId }: Props) {
                                                     className="h-7 px-2 text-xs"
                                                     onClick={handleSaveEdit}
                                                     disabled={
-                                                        isUpdating || !editingState.content.trim()
+                                                        isUpdating ||
+                                                        !editingState.content.trim() ||
+                                                        editingState.content.trim().length >
+                                                            ACTION_NOTE_CONTENT_MAX_LENGTH
                                                     }
                                                 >
                                                     <Check className="mr-1 size-3" />
@@ -224,27 +278,51 @@ export function ActionNotesPanel({ companyId }: Props) {
                             onChange={(e) => handleAuthorChange(e.target.value)}
                             placeholder="이름"
                             className="text-sm"
+                            maxLength={ACTION_NOTE_AUTHOR_MAX_LENGTH}
                             disabled={isCreating}
+                            {...getErrorFieldProps(newNoteErrors.author, authorErrorId)}
                         />
+                        <div className="flex items-center justify-between gap-2">
+                            <FieldErrorMessage id={authorErrorId} message={newNoteErrors.author} />
+                            <CharacterCount
+                                current={author.length}
+                                max={ACTION_NOTE_AUTHOR_MAX_LENGTH}
+                            />
+                        </div>
                         <div className="flex items-end gap-2">
                             <Textarea
                                 value={content}
-                                onChange={(e) => setContent(e.target.value)}
+                                onChange={(e) => handleContentChange(e.target.value)}
                                 onKeyDown={handleNewKeyDown}
                                 placeholder="대응 조치나 메모를 입력하세요..."
                                 rows={2}
-                                className="resize-none text-sm"
+                                maxLength={ACTION_NOTE_CONTENT_MAX_LENGTH}
+                                className="field-sizing-fixed h-20 max-h-20 resize-none overflow-y-auto text-sm"
                                 disabled={isCreating}
+                                {...getErrorFieldProps(newNoteErrors.content, contentErrorId)}
                             />
                             <Button
                                 size="icon"
                                 onClick={handleSend}
-                                disabled={isCreating || !content.trim() || !author.trim()}
+                                disabled={
+                                    isCreating ||
+                                    !content.trim() ||
+                                    !author.trim() ||
+                                    content.trim().length > ACTION_NOTE_CONTENT_MAX_LENGTH ||
+                                    author.trim().length > ACTION_NOTE_AUTHOR_MAX_LENGTH
+                                }
                                 className="mb-0.5 shrink-0"
                                 aria-label="전송"
                             >
                                 <Send className="size-4" />
                             </Button>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                            <FieldErrorMessage id={contentErrorId} message={newNoteErrors.content} />
+                            <CharacterCount
+                                current={content.length}
+                                max={ACTION_NOTE_CONTENT_MAX_LENGTH}
+                            />
                         </div>
                         <p className="text-muted-foreground text-xs">
                             Enter 전송 · Shift+Enter 줄바꿈

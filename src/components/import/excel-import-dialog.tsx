@@ -31,10 +31,18 @@ import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useCountries } from '@/hooks/countries/useCountries';
 import { useExcelImport } from '@/hooks/import/useExcelImport';
 import { SOURCE_LABELS } from '@/constants/ghg-scope';
+import { cn } from '@/lib/utils';
 import type { ParsedActivityRow } from '@/types';
 
 const COMPANY_NEW_SENTINEL = '__new__';
 const ALLOWED_EXTENSIONS = ['.xlsx', '.xls'];
+const INVALID_FIELD_CLASS = 'border-destructive ring-destructive/20 ring-3';
+const ERROR_IDS = {
+    file: 'excel-file-error',
+    company: 'excel-company-error',
+    newCompanyName: 'excel-new-company-name-error',
+    newCompanyCountry: 'excel-new-company-country-error',
+} as const;
 
 type Props = {
     open: boolean;
@@ -42,6 +50,29 @@ type Props = {
     defaultCompanyId?: string;
     fixedCompanyName?: string;
 };
+
+function getErrorA11yProps(error: string | undefined, errorId: string) {
+    return {
+        'aria-invalid': Boolean(error),
+        'aria-describedby': error ? errorId : undefined,
+    };
+}
+
+function ErrorMessage({
+    id,
+    children,
+    className,
+}: {
+    id: string;
+    children: string;
+    className?: string;
+}) {
+    return (
+        <p id={id} className={cn('text-destructive text-xs', className)}>
+            {children}
+        </p>
+    );
+}
 
 export function ExcelImportDialog({
     open,
@@ -68,6 +99,27 @@ export function ExcelImportDialog({
     const isCompanyFixed = Boolean(defaultCompanyId);
     const isNewCompany = !isCompanyFixed && selectedCompanyId === COMPANY_NEW_SENTINEL;
     const targetCompanyId = defaultCompanyId ?? selectedCompanyId;
+    const shouldValidateRequiredFields = preview !== null && previewError === null && !isPreviewing;
+    const hasStartedImportInput =
+        file !== null ||
+        selectedCompanyId.length > 0 ||
+        newCompanyName.trim().length > 0 ||
+        newCompanyCountry.length > 0;
+    const fileRequiredError =
+        !file && hasStartedImportInput ? 'Excel 파일을 선택해 주세요.' : undefined;
+    const companyRequiredError =
+        !isCompanyFixed && shouldValidateRequiredFields && selectedCompanyId.length === 0
+            ? '대상 회사를 선택해 주세요.'
+            : undefined;
+    const newCompanyNameError =
+        isNewCompany && shouldValidateRequiredFields && newCompanyName.trim().length === 0
+            ? '회사명을 입력해 주세요.'
+            : undefined;
+    const newCompanyCountryError =
+        isNewCompany && shouldValidateRequiredFields && newCompanyCountry.length === 0
+            ? '국가를 선택해 주세요.'
+            : undefined;
+    const uploadHasError = Boolean(fileRequiredError || previewError);
 
     const reset = useCallback(() => {
         abortRef.current?.abort();
@@ -188,11 +240,13 @@ export function ExcelImportDialog({
                 <div className="flex-1 overflow-y-auto px-6 pb-2">
                     {/* 파일 업로드 영역 */}
                     <div
-                        className={`relative mb-4 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-8 transition-colors ${
+                        className={cn(
+                            'relative mb-4 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-8 transition-colors',
                             isDragging
                                 ? 'border-primary bg-accent'
-                                : 'border-border hover:border-primary hover:bg-accent/50'
-                        }`}
+                                : 'border-border hover:border-primary hover:bg-accent/50',
+                            uploadHasError && 'border-destructive bg-destructive/5'
+                        )}
                         onDragOver={(e) => {
                             e.preventDefault();
                             setIsDragging(true);
@@ -202,6 +256,7 @@ export function ExcelImportDialog({
                         onClick={() => fileInputRef.current?.click()}
                         role="button"
                         aria-label="Excel 파일 업로드"
+                        aria-describedby={fileRequiredError ? ERROR_IDS.file : undefined}
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
                     >
@@ -242,6 +297,11 @@ export function ExcelImportDialog({
                             </>
                         )}
                     </div>
+                    {fileRequiredError && (
+                        <ErrorMessage id={ERROR_IDS.file} className="-mt-2 mb-4">
+                            {fileRequiredError}
+                        </ErrorMessage>
+                    )}
 
                     {/* 미리보기 스켈레톤 */}
                     {isPreviewing && (
@@ -326,7 +386,13 @@ export function ExcelImportDialog({
                             </div>
                         ) : (
                             <Select value={selectedCompanyId} onValueChange={setSelectedCompanyId}>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger
+                                    className={cn(
+                                        'w-full',
+                                        companyRequiredError && INVALID_FIELD_CLASS
+                                    )}
+                                    {...getErrorA11yProps(companyRequiredError, ERROR_IDS.company)}
+                                >
                                     <SelectValue placeholder="회사를 선택하세요" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -341,6 +407,11 @@ export function ExcelImportDialog({
                                 </SelectContent>
                             </Select>
                         )}
+                        {companyRequiredError && (
+                            <ErrorMessage id={ERROR_IDS.company}>
+                                {companyRequiredError}
+                            </ErrorMessage>
+                        )}
 
                         {!isCompanyFixed && isNewCompany && (
                             <div className="border-border space-y-3 rounded-md border p-3">
@@ -352,7 +423,20 @@ export function ExcelImportDialog({
                                         placeholder="예: CT-045 Corporation"
                                         value={newCompanyName}
                                         onChange={(e) => setNewCompanyName(e.target.value)}
+                                        className={cn(newCompanyNameError && INVALID_FIELD_CLASS)}
+                                        {...getErrorA11yProps(
+                                            newCompanyNameError,
+                                            ERROR_IDS.newCompanyName
+                                        )}
                                     />
+                                    {newCompanyNameError && (
+                                        <ErrorMessage
+                                            id={ERROR_IDS.newCompanyName}
+                                            className="mt-1"
+                                        >
+                                            {newCompanyNameError}
+                                        </ErrorMessage>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="mb-1 block text-xs font-medium">
@@ -363,7 +447,16 @@ export function ExcelImportDialog({
                                         onValueChange={setNewCompanyCountry}
                                         disabled={isCountriesLoading}
                                     >
-                                        <SelectTrigger className="w-full">
+                                        <SelectTrigger
+                                            className={cn(
+                                                'w-full',
+                                                newCompanyCountryError && INVALID_FIELD_CLASS
+                                            )}
+                                            {...getErrorA11yProps(
+                                                newCompanyCountryError,
+                                                ERROR_IDS.newCompanyCountry
+                                            )}
+                                        >
                                             <SelectValue
                                                 placeholder={
                                                     isCountriesLoading
@@ -380,6 +473,14 @@ export function ExcelImportDialog({
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    {newCompanyCountryError && (
+                                        <ErrorMessage
+                                            id={ERROR_IDS.newCompanyCountry}
+                                            className="mt-1"
+                                        >
+                                            {newCompanyCountryError}
+                                        </ErrorMessage>
+                                    )}
                                 </div>
                             </div>
                         )}
