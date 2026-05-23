@@ -31,6 +31,7 @@ import { useCompanies } from '@/hooks/companies/useCompanies';
 import { useCountries } from '@/hooks/countries/useCountries';
 import { useExcelImport } from '@/hooks/import/useExcelImport';
 import { SOURCE_LABELS } from '@/constants/ghg-scope';
+import { formatPcfEmissions, PCF_EMISSIONS_UNIT } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import type { ParsedActivityRow } from '@/types';
 
@@ -212,7 +213,7 @@ export function ExcelImportDialog({
         }
     };
 
-    const totalEmissions = preview?.reduce((sum, r) => sum + r.emissions, 0) ?? 0;
+    const totalPcfEmissions = preview?.reduce((sum, r) => sum + r.emissionsKg, 0) ?? 0;
 
     // isPreviewing 포함 — 이전 파일의 preview가 state에 남아있는 동안 제출 차단
     const canImport =
@@ -324,7 +325,7 @@ export function ExcelImportDialog({
                             <p className="text-muted-foreground mb-2 text-xs">
                                 {preview.length}행 파싱 완료 · 합계{' '}
                                 <span className="text-foreground font-medium">
-                                    {totalEmissions.toFixed(4)} tCO₂e
+                                    {formatPcfEmissions(totalPcfEmissions)} {PCF_EMISSIONS_UNIT}
                                 </span>
                             </p>
                             <div className="border-border max-h-56 overflow-y-auto rounded-md border">
@@ -336,7 +337,9 @@ export function ExcelImportDialog({
                                             <TableHead>설명</TableHead>
                                             <TableHead className="text-right">량</TableHead>
                                             <TableHead>단위</TableHead>
-                                            <TableHead className="text-right">배출량</TableHead>
+                                            <TableHead className="text-right">
+                                                PCF 산정값
+                                            </TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -358,9 +361,9 @@ export function ExcelImportDialog({
                                                     {row.unit}
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono text-xs">
-                                                    {row.emissions.toFixed(4)}
+                                                    {formatPcfEmissions(row.emissionsKg)}
                                                     <span className="text-muted-foreground ml-1">
-                                                        tCO₂e
+                                                        {PCF_EMISSIONS_UNIT}
                                                     </span>
                                                 </TableCell>
                                             </TableRow>
