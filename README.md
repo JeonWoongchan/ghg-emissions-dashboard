@@ -239,8 +239,7 @@ Claude Code와 Codex를 함께 사용했습니다. AI는 구현 속도를 높이
 
 - 이 과제는 단순 차트 구현보다 탄소 도메인을 이해하고 설명하는 게 중요해. 사용자는 경영자와 실무자로 설정하고, 여러 회사의 GHG 배출 현황과 PCF 산정 결과를 빠르게 이해하는 방향으로 서비스를 만들려고 생각 중이야. 이때 대시보드(메인), 회사별 페이지, 배출원 분석 페이지, 리스크 분석 페이지로 나누는 구성이 자연스러운지 검토해줘.
 - Recharts가 초기 번들에 포함되어 First Load JS가 커지므로 LCP랑 TTI에 영향을 주고있어. 차트 컴포넌트는 next/dynamic으로 지연 로드해줘.
-- Docker 제출 환경은 평가자가 별도 DB를 설치하지 않아도 실행 가능해야 한다. Dockerfile은 Node 22 LTS 기반으로 작성하고, 런타임은 non-root user로 실행해.
-docker-compose는 PostgreSQL과 앱을 함께 띄우며, DB 계정과 비밀번호는 .env에서 주입하도록 구성해.
+- Docker 제출 환경은 평가자가 별도 DB를 설치하지 않아도 실행 가능해야 해. Dockerfile은 Node 22 LTS 기반으로 작성하고, docker-compose는 PostgreSQL과 앱을 함께 띄우며, DB 계정과 비밀번호는 .env에서 주입하도록 구성해.
 
 ---
 
